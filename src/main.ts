@@ -1,7 +1,7 @@
 import { createApp } from "vue";
 import App from "./App.vue";
 import * as VueRouter from "vue-router";
-import routes from "./configs/routes";
+import routes from "./routes/index";
 import { createPinia } from "pinia";
 import piniaPluginPersistedstate from "pinia-plugin-persistedstate";
 

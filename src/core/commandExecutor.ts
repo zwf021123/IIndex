@@ -50,6 +50,7 @@ export const doCommandExecute = async (
  * @param parentCommand
  */
 const getCommand = (text: string, parentCommand?: CommandType): CommandType => {
+  // 获取第一个单词
   let func = text.split(" ", 1)[0];
   // 大小写无关
   func = func.toLowerCase();

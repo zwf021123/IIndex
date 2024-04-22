@@ -85,29 +85,20 @@
 </template>
 
 <script setup lang="ts">
-import {
-  computed,
-  onMounted,
-  Ref,
-  ref,
-  StyleValue,
-  toRefs,
-  watchEffect,
-} from "vue";
+import { computed, onMounted, ref, StyleValue, toRefs, watchEffect } from "vue";
+import { registerShortcuts } from "./shortcuts";
+import { useTerminalConfigStore } from "../../core/commands/terminal/config/terminalConfigStore";
+import useHint from "./hint";
+import useHistory from "./history";
+import { LOCAL_USER } from "../../core/commands/user/userConstant";
+import ContentOutput from "./ContentOutput.vue";
 import CommandOutputType = YuTerminal.CommandOutputType;
 import OutputType = YuTerminal.OutputType;
 import CommandInputType = YuTerminal.CommandInputType;
-import { registerShortcuts } from "./shortcuts";
 import TerminalType = YuTerminal.TerminalType;
 import TextOutputType = YuTerminal.TextOutputType;
-import useHistory from "./history";
-import ContentOutput from "./ContentOutput.vue";
 import OutputStatusType = YuTerminal.OutputStatusType;
-import { useTerminalConfigStore } from "../../core/commands/terminal/config/terminalConfigStore";
-import useHint from "./hint";
 import UserType = User.UserType;
-import { LOCAL_USER } from "../../core/commands/user/userConstant";
-import { defineStore } from "pinia";
 
 interface YuTerminalProps {
   height?: string | number;
@@ -123,6 +114,42 @@ const props = withDefaults(defineProps<YuTerminalProps>(), {
   user: LOCAL_USER as any,
 });
 
+/**
+ * 终端主样式
+ */
+const mainStyle = computed(() => {
+  const fullScreenStyle: StyleValue = {
+    position: "fixed",
+    top: 0,
+    bottom: 0,
+    left: 0,
+    right: 0,
+  };
+  return props.fullScreen
+    ? fullScreenStyle
+    : {
+        height: props.height,
+      };
+});
+
+/**
+ * 终端包装类主样式
+ */
+const wrapperStyle = computed(() => {
+  // 从配置中获取背景
+  const { background } = configStore;
+  const style = {
+    ...mainStyle.value,
+  };
+  if (background.startsWith("http")) {
+    style.background = `url(${background})`;
+  } else {
+    style.background = background;
+  }
+  return style;
+});
+
+// 避免解构丢失响应性
 const { user } = toRefs(props);
 
 const terminalRef = ref();
@@ -148,6 +175,29 @@ const initCommand: CommandInputType = {
 };
 
 /**
+ * 只执行一次
+ */
+onMounted(() => {
+  registerShortcuts(terminal);
+  const { welcomeTexts } = configStore;
+  if (welcomeTexts?.length > 0) {
+    welcomeTexts.forEach((welcomeText) => {
+      terminal.writeTextOutput(welcomeText);
+    });
+  } else {
+    terminal.writeTextOutput(
+      `Welcome to IIndex, coolest browser index for geeks!` +
+        `<a href="//github.com/zwf021123/IIndex" target='_blank'> GitHub Open Source</a>`
+    );
+    terminal.writeTextOutput(
+      `Author <a href="//docs.qq.com/doc/DUFFRVWladXVjeUxW" target="_blank">coder_zwf021123</a>` +
+        `: please input 'help' to enjoy`
+    );
+    terminal.writeTextOutput("<br/>");
+  }
+});
+
+/**
  * 待输入的命令
  */
 const inputCommand = ref<CommandInputType>({
@@ -169,6 +219,7 @@ const {
 const { hint, setHint, debounceSetHint } = useHint();
 
 /**
+ * 核心
  * 提交命令（回车）
  */
 const doSubmitCommand = async () => {
@@ -218,44 +269,10 @@ watchEffect(() => {
 
 /**
  * 输入提示符
+ * 根据用户名生成
  */
 const prompt = computed(() => {
   return `[${user.value.username}]$`;
-});
-
-/**
- * 终端主样式
- */
-const mainStyle = computed(() => {
-  const fullScreenStyle: StyleValue = {
-    position: "fixed",
-    top: 0,
-    bottom: 0,
-    left: 0,
-    right: 0,
-  };
-  return props.fullScreen
-    ? fullScreenStyle
-    : {
-        height: props.height,
-      };
-});
-
-/**
- * 终端包装类主样式
- */
-const wrapperStyle = computed(() => {
-  // 从配置中获取背景
-  const { background } = configStore;
-  const style = {
-    ...mainStyle.value,
-  };
-  if (background.startsWith("http")) {
-    style.background = `url(${background})`;
-  } else {
-    style.background = background;
-  }
-  return style;
 });
 
 /**
@@ -394,29 +411,6 @@ const terminal: TerminalType = {
   toggleAllCollapse,
   setCommandCollapsible,
 };
-
-/**
- * 只执行一次
- */
-onMounted(() => {
-  registerShortcuts(terminal);
-  const { welcomeTexts } = configStore;
-  if (welcomeTexts?.length > 0) {
-    welcomeTexts.forEach((welcomeText) => {
-      terminal.writeTextOutput(welcomeText);
-    });
-  } else {
-    terminal.writeTextOutput(
-      `Welcome to IIndex, coolest browser index for geeks!` +
-        `<a href="//github.com/zwf021123/IIndex" target='_blank'> GitHub Open Source</a>`
-    );
-    terminal.writeTextOutput(
-      `Author <a href="//docs.qq.com/doc/DUFFRVWladXVjeUxW" target="_blank">coder_zwf021123</a>` +
-        `: please input 'help' to enjoy`
-    );
-    terminal.writeTextOutput("<br/>");
-  }
-});
 
 /**
  * 当点击空白聚焦输入框

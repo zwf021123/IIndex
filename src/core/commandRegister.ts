@@ -58,6 +58,7 @@ const commandList: CommandType[] = [
 
 /**
  * 命令字典
+ * 将命令的 func（或其他别名） 作为 key，方便查找
  */
 const commandMap: Record<string, CommandType> = {};
 

@@ -16,14 +16,15 @@
 
 <script setup lang="ts">
 import smartText from "../../utils/smartText";
-import OutputType = YuTerminal.OutputType;
+// import OutputType = YuTerminal.OutputType;
 import { computed, toRefs } from "vue";
 
 interface OutputProps {
-  output: OutputType;
+  output: YuTerminal.OutputType;
 }
 
 const props = defineProps<OutputProps>();
+// 注意：这里因为解构，所以需要使用 toRefs避免丢失响应性
 const { output } = toRefs(props);
 const outputTagColor = computed((): string => {
   if (!output.value.status) {
