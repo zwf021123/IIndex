@@ -20,16 +20,16 @@ const backgroundCommand: CommandType = {
   ],
   options: [],
   async action(options, terminal) {
+    console.log(options._);
+
     const { _ } = options;
     let url = _[0];
-    if (_.length > 0) {
-      url = _[0];
-    }
     const { setBackground } = useTerminalConfigStore();
     if (!url) {
       // 随机获取壁纸
       const res = await myAxios.post("/background/get/random");
       setBackground(res.data);
+      return;
     }
     setBackground(url);
   },

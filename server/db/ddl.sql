@@ -1,3 +1,7 @@
+CREATE DATABASE IIndex;
+
+USE IIndex;
+
 CREATE TABLE `user`
 (
     `id`         bigint(20)   NOT NULL AUTO_INCREMENT COMMENT 'id',
@@ -9,4 +13,4 @@ CREATE TABLE `user`
     `updateTime` datetime              DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     `isDelete`   tinyint(4)   NOT NULL DEFAULT '0' COMMENT '是否删除',
     PRIMARY KEY (`id`)
-) ENGINE = InnoDB COMMENT ='用户'
+) ENGINE = InnoDB COMMENT ='用户';

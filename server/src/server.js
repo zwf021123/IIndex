@@ -28,11 +28,13 @@ class ExpressServer {
     this.contextPath = "/api";
     // 请求日志
     this.app.use(morgan("short"));
+    // 解析请求体
     this.app.use(
       bodyParser.urlencoded({ extended: false, limit: requestLimit })
     );
     this.app.use(bodyParser.json({ limit: requestLimit }));
     this.app.set("x-powered-by", false);
+    // 设置跨域
     this.app.all("*", (req, res, next) => {
       // 开启跨域
       res.setHeader("Access-Control-Allow-Credentials", "true");
@@ -58,7 +60,7 @@ class ExpressServer {
       // store session存储实例，默认为一个新的 MemoryStore 实例。
       store: new RedisStore({ client: redisClient }), // 只需设置这个就可存储到redis
       name: "session_id", // 默认connect.sid
-      secret: "yupi", // 设置签名秘钥  内容可以任意填写
+      secret: "IIndex", // 设置签名秘钥  内容可以任意填写
       resave: false, // 强制保存，如果session没有被修改也要重新保存,默认true(推荐false)
       saveUninitialized: true, // 如果原先没有session那么就设置，否则不设置(推荐true)
       rolling: true, // 每次请求更新有效时长
@@ -96,16 +98,16 @@ class ExpressServer {
           `req start path = ${req.path}, clientIp = ${requestClientIp}, params = ${params}`
         );
         result = await handlerFunction(event, req, res);
+        console.log("result", result);
         // 封装响应
         result = {
           code: 0,
           data: result,
         };
         console.log(
-          `req end path = ${
-            req.path
-          }, clientIp = ${requestClientIp}, params = ${params}, costTime = ${
-            new Date().getTime() - startTime
+          `req end path = 
+          ${req.path
+          }, clientIp = ${requestClientIp}, params = ${params}, costTime = ${new Date().getTime() - startTime
           }`
         );
       } catch (e) {
@@ -124,8 +126,7 @@ class ExpressServer {
           };
         }
         console.error(
-          `req error path = ${
-            req.path
+          `req error path = ${req.path
           }, clientIp = ${requestClientIp}, params = ${JSON.stringify(event)}`,
           e
         );
