@@ -35,6 +35,7 @@ const addCommand: CommandType = {
     let { _, name, link, dir } = options;
     const spaceStore = useSpaceStore();
     if (!dir) {
+      // 默认当前目录
       dir = spaceStore.currentDir;
     }
     if (!name) {
@@ -56,7 +57,7 @@ const addCommand: CommandType = {
     };
     const result = spaceStore.addItem(item);
     if (result) {
-      terminal.writeTextResult("添加成功");
+      terminal.writeTextResult("添加成功", "success");
     } else {
       terminal.writeTextErrorResult("添加失败");
     }

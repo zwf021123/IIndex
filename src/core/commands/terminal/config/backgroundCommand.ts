@@ -1,6 +1,5 @@
 import { CommandType } from "../../../command";
 import { useTerminalConfigStore } from "./terminalConfigStore";
-import axios from "axios";
 import myAxios from "../../../../plugins/myAxios";
 
 /**
@@ -18,17 +17,32 @@ const backgroundCommand: CommandType = {
       required: false,
     },
   ],
-  options: [],
-  async action(options, terminal) {
-    console.log(options._);
-
-    const { _ } = options;
+  options: [
+    {
+      key: "category",
+      desc: "壁纸分类(可选meizi/dongman/fengjing/suiji)",
+      alias: ["c"],
+      type: "string",
+    },
+  ],
+  action(options, terminal) {
+    const { _, category } = options;
     let url = _[0];
     const { setBackground } = useTerminalConfigStore();
     if (!url) {
+      terminal.setLoading(true);
       // 随机获取壁纸
-      const res = await myAxios.post("/background/get/random");
-      setBackground(res.data);
+      myAxios
+        .post("/background/get/random", {
+          lx: category || "suiji",
+        })
+        .then((res) => {
+          console.log("背景请求", res);
+          setBackground(res.data);
+        })
+        .finally(() => {
+          terminal.setLoading(false);
+        });
       return;
     }
     setBackground(url);

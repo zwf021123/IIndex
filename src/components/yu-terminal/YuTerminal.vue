@@ -4,6 +4,13 @@
     :style="wrapperStyle"
     @click="handleClickWrapper"
   >
+    <a-spin
+      class="loading"
+      tip="Loading..."
+      size="large"
+      :spinning="spinning"
+    />
+
     <div ref="terminalRef" class="yu-terminal" :style="mainStyle">
       <a-collapse
         v-model:activeKey="activeKeys"
@@ -20,7 +27,7 @@
           >
             <template #header>
               <span style="user-select: none; margin-right: 10px">
-                {{ prompt }}
+                {{ `user@${user.username}:~${output.dir}#` }}
               </span>
               <span>{{ output.text }}</span>
             </template>
@@ -38,7 +45,7 @@
             <template v-if="output.type === 'command'">
               <div class="terminal-row">
                 <span style="user-select: none; margin-right: 10px">{{
-                  prompt
+                  `user@${user.username}:~${output.dir}#`
                 }}</span>
                 <span>{{ output.text }}</span>
               </div>
@@ -85,7 +92,16 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, ref, StyleValue, toRefs, watchEffect } from "vue";
+import {
+  computed,
+  markRaw,
+  onMounted,
+  ref,
+  StyleValue,
+  toRefs,
+  watchEffect,
+} from "vue";
+import { useSpaceStore } from "@/stores";
 import { registerShortcuts } from "./shortcuts";
 import { useTerminalConfigStore } from "../../core/commands/terminal/config/terminalConfigStore";
 import useHint from "./hint";
@@ -138,14 +154,12 @@ const mainStyle = computed(() => {
 const wrapperStyle = computed(() => {
   // 从配置中获取背景
   const { background } = configStore;
+  console.log("background", background);
   const style = {
     ...mainStyle.value,
   };
-  if (background.startsWith("http")) {
-    style.background = `url(${background})`;
-  } else {
-    style.background = background;
-  }
+  style.background = `url(${background})  no-repeat center/cover`;
+
   return style;
 });
 
@@ -159,7 +173,8 @@ const outputList = ref<OutputType[]>([]);
 // 命令列表
 const commandList = ref<CommandOutputType[]>([]);
 const commandInputRef = ref();
-
+// 页面loading
+const spinning = ref(false);
 // 命令是否运行
 const isRunning = ref(false);
 
@@ -234,11 +249,12 @@ const doSubmitCommand = async () => {
       inputText = command.text;
     }
   }
-  // 执行命令
+  // 执行命令(记录当前命令执行时的目录)
   const newCommand: CommandOutputType = {
     text: inputText,
     type: "command",
     resultList: [],
+    dir: useSpaceStore().currentDir,
   };
   // 记录当前命令，便于写入结果
   currentNewCommand = newCommand;
@@ -252,6 +268,7 @@ const doSubmitCommand = async () => {
     // 重置当前要查看的命令位置
     commandHistoryPos.value = commandList.value.length;
   }
+  // 重置
   inputCommand.value = { ...initCommand };
   // 默认展开折叠面板
   activeKeys.value.push(outputList.value.length - 1);
@@ -269,10 +286,12 @@ watchEffect(() => {
 
 /**
  * 输入提示符
- * 根据用户名生成
+ * 根据用户名和当前最新目录生成
  */
 const prompt = computed(() => {
-  return `[${user.value.username}]$`;
+  const spaceStore = useSpaceStore();
+  const curDir = spaceStore.currentDir;
+  return `user@${user.value.username}:~${curDir}#`;
 });
 
 /**
@@ -317,7 +336,10 @@ const writeTextSuccessResult = (text: string) => {
  * @param output
  */
 const writeResult = (output: OutputType) => {
-  currentNewCommand.resultList.push(output);
+  // 组件无需响应式追踪
+  currentNewCommand.resultList.push(
+    output.type === "component" ? markRaw(output) : output
+  );
 };
 
 /**
@@ -391,6 +413,13 @@ const toggleAllCollapse = () => {
 };
 
 /**
+ * 设置loading
+ */
+const setLoading = (loading: boolean) => {
+  spinning.value = loading;
+};
+
+/**
  * 操作终端的对象
  */
 const terminal: TerminalType = {
@@ -410,6 +439,7 @@ const terminal: TerminalType = {
   listCommandHistory,
   toggleAllCollapse,
   setCommandCollapsible,
+  setLoading,
 };
 
 /**
@@ -430,6 +460,14 @@ defineExpose({
 <style scoped>
 .yu-terminal-wrapper {
   background: black;
+}
+
+.yu-terminal-wrapper > .loading {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 1001;
 }
 
 .yu-terminal {

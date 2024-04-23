@@ -15,6 +15,7 @@ declare namespace YuTerminal {
     status?: OutputStatusType;
     props?: any;
     collapsible?: boolean;
+    dir?: string;
   }
 
   /**
@@ -87,5 +88,7 @@ declare namespace YuTerminal {
     toggleAllCollapse: () => void;
     // 设置命令是否可折叠
     setCommandCollapsible: (collapsible: boolean) => void;
+    // 设置页面loading状态
+    setLoading: (loading: boolean) => void;
   }
 }

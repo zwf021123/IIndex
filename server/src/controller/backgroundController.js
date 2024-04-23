@@ -9,7 +9,7 @@ const { THIRD_PART_SERVICE_ERROR_CODE } = require("../exception/errorCode");
  * @param res
  */
 async function getRandomBackgroundApi(event, req, res) {
-  const result = await getRandomBackground();
+  const result = await getRandomBackground(event);
   if (!result) {
     throw new MyError(THIRD_PART_SERVICE_ERROR_CODE);
   }

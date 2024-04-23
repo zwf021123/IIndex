@@ -10,7 +10,7 @@ const UserModel = require("../model/user");
 const md5 = require("md5");
 
 // 密码加盐
-const SALT = "coder_yupi";
+const SALT = "coder_zwf021123";
 
 /**
  * 获取当前登录用户
@@ -51,7 +51,7 @@ async function userRegister(username, password, email) {
   if (!regEmail.test(email)) {
     throw new MyError(REQUEST_PARAMS_ERROR_CODE, "邮箱非法");
   }
-  // 用户是否已存在
+  // 用户是否已存在(只要用户名或email有一个重复就不允许注册)
   let user = await UserModel.findOne({
     where: {
       [Op.or]: [{ username }, { email }],
@@ -61,6 +61,7 @@ async function userRegister(username, password, email) {
     throw new MyError(REQUEST_PARAMS_ERROR_CODE, "该用户名或邮箱已被注册");
   }
   // 插入新用户
+  // 密码加密
   const cryptoPassword = md5(password + SALT);
   user = await UserModel.create({
     username,
@@ -83,7 +84,7 @@ async function userLogin(username, password, req) {
     throw new MyError(REQUEST_PARAMS_ERROR_CODE, "参数错误");
   }
   const cryptoPassword = md5(password + SALT);
-  // 用户是否已存在
+  // 用户是否已存在（记得在查询结果中除外密码）
   let user = await UserModel.findOne({
     attributes: { exclude: ["password"] },
     where: {

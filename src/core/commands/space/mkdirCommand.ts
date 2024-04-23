@@ -7,7 +7,7 @@ import { useSpaceStore } from "./spaceStore";
  */
 const mkdirCommand: CommandType = {
   func: "mkdir",
-  name: "创建空间目录",
+  name: "创建空间目录(在当前路径下)",
   params: [
     {
       key: "dir",

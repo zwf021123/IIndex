@@ -33,11 +33,13 @@ class ExpressServer {
       bodyParser.urlencoded({ extended: false, limit: requestLimit })
     );
     this.app.use(bodyParser.json({ limit: requestLimit }));
+    // 禁用攻击者获取Express版本信息
     this.app.set("x-powered-by", false);
     // 设置跨域
     this.app.all("*", (req, res, next) => {
       // 开启跨域
       res.setHeader("Access-Control-Allow-Credentials", "true");
+      // 获取来源地址（域、协议或端口）
       const origin = req.get("Origin");
       // 允许的地址 http://127.0.0.1:9000 这样的格式
       if (origin) {
@@ -87,6 +89,7 @@ class ExpressServer {
       try {
         const startTime = new Date().getTime();
         let params;
+        // 避免请求参数中包含文件导致json序列化出错
         if (event.file) {
           let eventCopy = { ...event };
           eventCopy.file = undefined;
@@ -98,7 +101,6 @@ class ExpressServer {
           `req start path = ${req.path}, clientIp = ${requestClientIp}, params = ${params}`
         );
         result = await handlerFunction(event, req, res);
-        console.log("result", result);
         // 封装响应
         result = {
           code: 0,

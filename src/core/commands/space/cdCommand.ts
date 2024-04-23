@@ -25,7 +25,7 @@ const cdCommand: CommandType = {
     const spaceStore = useSpaceStore();
     const result = spaceStore.updateCurrentDir(targetDir);
     if (result) {
-      terminal.writeTextResult(`已切换至目录：${spaceStore.currentDir}`);
+      terminal.writeTextSuccessResult(`已切换至目录：${spaceStore.currentDir}`);
     } else {
       terminal.writeTextErrorResult("切换目录失败");
     }
