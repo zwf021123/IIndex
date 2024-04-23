@@ -21,6 +21,8 @@ const cdCommand: CommandType = {
       terminal.writeTextErrorResult("参数不足");
       return;
     }
+    console.log("目录切换参数", options);
+
     const targetDir = _[0];
     const spaceStore = useSpaceStore();
     const result = spaceStore.updateCurrentDir(targetDir);

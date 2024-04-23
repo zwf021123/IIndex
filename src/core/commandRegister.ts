@@ -26,7 +26,7 @@ import ikuntestCommand from "./commands/relax/ikuntest/ikuntestCommand";
 import varbookCommand from "./commands/varbook/varbookCommand";
 
 /**
- * 命令列表（数组元素顺序会影响 help 命令的展示顺序）
+ * 命令列表（数组元素顺序会影响 help 命令的展示顺序，命令命名会影响提示）
  */
 const commandList: CommandType[] = [
   shortcutCommand,

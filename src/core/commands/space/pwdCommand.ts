@@ -6,11 +6,11 @@ import { useSpaceStore } from "./spaceStore";
  */
 const pwdCommand: CommandType = {
   func: "pwd",
-  name: "显示当前空间位置",
+  name: "显示当前目录位置",
   options: [],
   action(options, terminal): void {
     const spaceStore = useSpaceStore();
-    const output = `当前目录：${spaceStore.currentDir}`;
+    const output = spaceStore.currentDir;
     terminal.writeTextResult(output);
   },
 };

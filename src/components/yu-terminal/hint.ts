@@ -1,12 +1,12 @@
 import { ref } from "vue";
 import { getUsageStr } from "../../core/commands/terminal/help/helpUtils";
-import { commandMap } from "../../core/commandRegister";
+import { commandList, commandMap } from "../../core/commandRegister";
 import _, { trim } from "lodash";
 import { useTerminalConfigStore } from "../../core/commands/terminal/config/terminalConfigStore";
 
 /**
  * 命令提示功能
- * @author yupi
+ * @author awf021123
  */
 const useHint = () => {
   const hint = ref("");
@@ -21,13 +21,9 @@ const useHint = () => {
       hint.value = "";
       return;
     }
-    const args = trim(inputText).split(" ");
-    // 大小写无关
-    let func = args[0].toLowerCase();
-    // 前缀匹配
-    const likeKey = Object.keys(commandMap).filter((key) =>
-      key.startsWith(func)
-    )[0];
+    const args = trim(inputText).split(/\s+/);
+
+    const likeKey = likeSearch(args[0]);
     let command = commandMap[likeKey];
     if (!command) {
       hint.value = "";
@@ -39,7 +35,9 @@ const useHint = () => {
       Object.keys(command.subCommands).length > 0 &&
       args.length > 1
     ) {
-      hint.value = getUsageStr(command.subCommands[args[1]], command);
+      // 模糊查询子命令func
+      const likeKey = likeSearch(args[1], command.subCommands);
+      hint.value = getUsageStr(command.subCommands[likeKey], command);
     } else {
       hint.value = getUsageStr(command);
     }
@@ -57,6 +55,19 @@ const useHint = () => {
     setHint,
     debounceSetHint,
   };
+};
+
+/**
+ * 模糊查询
+ */
+const likeSearch = (keyword: string, commandMapParam: Object = commandMap) => {
+  // 大小写无关
+  let func = keyword.toLowerCase();
+  // 前缀匹配
+  const likeKey = Object.keys(commandMapParam).filter((key) =>
+    key.startsWith(func)
+  )[0];
+  return likeKey;
 };
 
 export default useHint;

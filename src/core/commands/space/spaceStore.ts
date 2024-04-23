@@ -172,7 +172,7 @@ export const useSpaceStore = defineStore("space", {
     updateCurrentDir(newDir: string) {
       let fullPath = getFullPath(this.currentDir, newDir);
       // 上层目录
-      if (newDir === "..") {
+      if (newDir === "../") {
         // 已经是根目录，无法到上层
         if (this.currentDir === "/") {
           return false;
