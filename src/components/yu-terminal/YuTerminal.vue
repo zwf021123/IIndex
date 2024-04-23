@@ -391,9 +391,15 @@ const isInputFocused = () => {
  */
 const setTabCompletion = () => {
   if (hint.value) {
-    inputCommand.value.text = `${hint.value.split(" ")[0]}${
-      hint.value.split(" ").length > 1 ? " " : ""
-    }`;
+    const wordArr = inputCommand.value.text.split(/\s+/);
+    const hintArr = hint.value.split(/\s+/);
+    const wordNum = wordArr.length;
+    // 将当前输入个数的单词替换为提示的单词
+    inputCommand.value.text = wordArr
+      .map((word, index) => {
+        return index <= wordNum - 1 ? hintArr[index] : "";
+      })
+      .join(" ");
   }
 };
 
