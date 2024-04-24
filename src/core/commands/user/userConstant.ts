@@ -1,4 +1,4 @@
-import UserType = User.UserType;
+import { UserType } from "@/types/user";
 
 /**
  * 本地用户

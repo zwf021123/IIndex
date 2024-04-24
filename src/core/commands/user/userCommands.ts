@@ -1,8 +1,8 @@
 import { CommandType } from "@/types/command";
 import registerCommand from "./subCommands/registerCommand";
 import loginCommand from "./subCommands/loginCommand";
-import { getLoginUser } from "./userApi";
-import { useUserStore } from "./userStore";
+import { getLoginUser } from "@/api/user";
+import { useUserStore } from "@/stores";
 import { LOCAL_USER } from "./userConstant";
 import logoutCommand from "./subCommands/logoutCommand";
 

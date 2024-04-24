@@ -1,6 +1,6 @@
 import { CommandType } from "@/types/command";
-import { userLogin, userRegister } from "../userApi";
-import { useUserStore } from "../userStore";
+import { userLogin, userRegister } from "@/api/user";
+import { useUserStore } from "@/stores";
 
 /**
  * 用户登录命令

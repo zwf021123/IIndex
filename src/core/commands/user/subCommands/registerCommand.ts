@@ -1,6 +1,6 @@
 import { CommandType } from "@/types/command";
 import { getSingleMusic } from "../../relax/music/musicApi";
-import { userRegister } from "../userApi";
+import { userRegister } from "@/api/user";
 
 /**
  * 用户注册命令

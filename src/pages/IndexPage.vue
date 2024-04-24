@@ -10,7 +10,7 @@
 <script setup lang="ts">
 import { doCommandExecute } from "../core/commandExecutor";
 import { onMounted, ref } from "vue";
-import { useUserStore } from "../core/commands/user/userStore";
+import { useUserStore } from "@/stores";
 import { storeToRefs } from "pinia";
 
 const terminalRef = ref();

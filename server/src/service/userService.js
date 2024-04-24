@@ -40,9 +40,6 @@ async function getLoginUser(req) {
  */
 async function userRegister(username, password, email) {
   // 校验
-  if (!username || !password || !email) {
-    throw new MyError(REQUEST_PARAMS_ERROR_CODE, "参数错误");
-  }
   if (username > 32) {
     throw new MyError(REQUEST_PARAMS_ERROR_CODE, "用户名过长");
   }

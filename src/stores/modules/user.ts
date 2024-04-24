@@ -1,7 +1,7 @@
 import { defineStore } from "pinia";
 import { getLoginUser } from "@/api/user";
 import { LOCAL_USER } from "@/constants/user";
-import UserType = User.UserType;
+import { UserType } from "@/types/user";
 
 /**
  * 用户系统

@@ -114,7 +114,7 @@ import CommandInputType = YuTerminal.CommandInputType;
 import TerminalType = YuTerminal.TerminalType;
 import TextOutputType = YuTerminal.TextOutputType;
 import OutputStatusType = YuTerminal.OutputStatusType;
-import UserType = User.UserType;
+import { UserType } from "@/types/user";
 
 interface YuTerminalProps {
   height?: string | number;

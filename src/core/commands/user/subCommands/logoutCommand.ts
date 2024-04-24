@@ -1,6 +1,6 @@
 import { CommandType } from "@/types/command";
-import { userLogin, userLogout, userRegister } from "../userApi";
-import { useUserStore } from "../userStore";
+import { userLogin, userLogout, userRegister } from "@/api/user";
+import { useUserStore } from "@/stores";
 import { LOCAL_USER } from "../userConstant";
 
 /**
