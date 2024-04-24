@@ -1,4 +1,4 @@
-import { CommandType } from "../../command";
+import { CommandType } from "@/types/command";
 
 /**
  * 搜狗搜索命令

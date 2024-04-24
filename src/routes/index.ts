@@ -1,6 +1,11 @@
-import { RouteRecordRaw } from "vue-router";
+import { RouteRecordRaw, createRouter, createWebHashHistory } from "vue-router";
 import IndexPage from "../pages/IndexPage.vue";
 
 const routes: RouteRecordRaw[] = [{ path: "/", component: IndexPage }];
 
-export default routes;
+const router = createRouter({
+  history: createWebHashHistory(),
+  routes,
+});
+
+export default router;

@@ -1,4 +1,4 @@
-import { CommandType } from "../../command";
+import { CommandType } from "@/types/command";
 
 /**
  * GitHub 搜索命令

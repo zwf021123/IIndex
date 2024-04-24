@@ -1,4 +1,4 @@
-import { CommandType } from "../../../command";
+import { CommandType } from "@/types/command";
 import { useTerminalConfigStore } from "./terminalConfigStore";
 import myAxios from "../../../../plugins/myAxios";
 

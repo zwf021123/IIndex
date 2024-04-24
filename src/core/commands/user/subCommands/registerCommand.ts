@@ -1,4 +1,4 @@
-import { CommandType } from "../../../command";
+import { CommandType } from "@/types/command";
 import { getSingleMusic } from "../../relax/music/musicApi";
 import { userRegister } from "../userApi";
 

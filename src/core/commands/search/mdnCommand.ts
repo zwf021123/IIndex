@@ -1,4 +1,4 @@
-import { CommandType } from "../../command";
+import { CommandType } from "@/types/command";
 
 const mdnCommand: CommandType = {
   func: "mdn",

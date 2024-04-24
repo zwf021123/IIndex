@@ -19,17 +19,6 @@ export const useSpaceStore = defineStore("space", {
     currentDir: "/",
   }),
   getters: {},
-  // 持久化
-  persist: {
-    key: "space-store",
-    storage: window.localStorage,
-    beforeRestore: (context) => {
-      console.log("load spaceStore data start");
-    },
-    afterRestore: (context) => {
-      console.log("load spaceStore data end");
-    },
-  },
   actions: {
     /**
      * 获取单条目
@@ -187,6 +176,16 @@ export const useSpaceStore = defineStore("space", {
       }
       this.currentDir = fullPath;
       return true;
+    },
+  },
+  // 持久化(默认是存储到loacalStorage)
+  persist: {
+    key: "space-store",
+    beforeRestore: (context) => {
+      console.log("load spaceStore data start");
+    },
+    afterRestore: (context) => {
+      console.log("load spaceStore data end");
     },
   },
 });

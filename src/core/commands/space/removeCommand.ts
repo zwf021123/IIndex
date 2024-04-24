@@ -1,4 +1,4 @@
-import { CommandType } from "../../command";
+import { CommandType } from "@/types/command";
 import { ParsedOptions } from "getopts";
 import { useSpaceStore } from "./spaceStore";
 

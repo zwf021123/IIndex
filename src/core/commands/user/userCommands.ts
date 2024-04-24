@@ -1,4 +1,4 @@
-import { CommandType } from "../../command";
+import { CommandType } from "@/types/command";
 import registerCommand from "./subCommands/registerCommand";
 import loginCommand from "./subCommands/loginCommand";
 import { getLoginUser } from "./userApi";
