@@ -1,5 +1,5 @@
 <template>
-  <div>关于本站：IIndex 极客范儿的浏览器主页</div>
+  <div>关于本站：IIndex 程序员的定制化浏览器主页</div>
   <div>
     <a href="https://github.com/liyupi/IIndex" target="_blank">
       代码开源，欢迎 star 和贡献~

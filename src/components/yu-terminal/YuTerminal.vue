@@ -115,6 +115,7 @@ import TerminalType = YuTerminal.TerminalType;
 import TextOutputType = YuTerminal.TextOutputType;
 import OutputStatusType = YuTerminal.OutputStatusType;
 import { UserType } from "@/types/user";
+import { first, second } from "@/constants/terminal";
 
 interface YuTerminalProps {
   height?: string | number;
@@ -200,14 +201,8 @@ onMounted(() => {
       terminal.writeTextOutput(welcomeText);
     });
   } else {
-    terminal.writeTextOutput(
-      `Welcome to IIndex, coolest browser index for geeks!` +
-        `<a href="//github.com/zwf021123/IIndex" target='_blank'> GitHub Open Source</a>`
-    );
-    terminal.writeTextOutput(
-      `Author <a href="//docs.qq.com/doc/DUFFRVWladXVjeUxW" target="_blank">coder_zwf021123</a>` +
-        `: please input 'help' to enjoy`
-    );
+    terminal.writeTextOutput(first);
+    terminal.writeTextOutput(second);
     terminal.writeTextOutput("<br/>");
   }
 });
@@ -496,14 +491,6 @@ defineExpose({
   color: white;
   padding: 0;
 }
-
-/* .yu-terminal :deep(.ant-collapse) {
-  background: none;
-} */
-
-/* .yu-terminal :deep(.ant-collapse-borderless > .ant-collapse-item) {
-  border: none;
-} */
 
 .yu-terminal :deep(.ant-collapse-content > .ant-collapse-content-box) {
   padding: 0;

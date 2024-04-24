@@ -1,6 +1,6 @@
 {
   "name": "iindex",
-  "description": "极客范儿的浏览器主页",
+  "description": "程序员的定制化浏览器主页",
   "private": true,
   "version": "0.0.0",
   "scripts": {
