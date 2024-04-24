@@ -229,8 +229,13 @@ export const useSpaceStore = defineStore("space", {
  * @param name 条目名称（位置）
  */
 const getFullPath = (dir: string, name: string): string => {
+  // 需要对name的前缀进行处理例如./ / ../
   if (name.startsWith("/")) {
     return name;
+  } else if (name.startsWith("./")) {
+    return name.substring(1);
+  } else if (name.startsWith("../")) {
+    // 如果包含多个../需要递归处理
   }
   return dir + (dir === "/" ? "" : "/") + name;
 };
