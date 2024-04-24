@@ -17,15 +17,10 @@ const cdCommand: CommandType = {
   options: [],
   action(options, terminal): void {
     const { _ } = options;
-    if (_.length < 1) {
-      terminal.writeTextErrorResult("参数不足");
-      return;
-    }
-    console.log("目录切换参数", options);
-
+    // 如果没有参数就回到根目录
     const targetDir = _[0];
     const spaceStore = useSpaceStore();
-    const result = spaceStore.updateCurrentDir(targetDir);
+    const result = spaceStore.updateCurrentDir(targetDir || "/");
     if (result) {
       terminal.writeTextSuccessResult(`已切换至目录：${spaceStore.currentDir}`);
     } else {

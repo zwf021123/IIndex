@@ -6,7 +6,7 @@ import { SpaceItemType, SpaceType } from "./spaceCommands";
  */
 export const useSpaceStore = defineStore("space", {
   state: () => ({
-    // 空间
+    // 扁平化存储空间
     space: {
       // 默认包含根目录
       "/": {
@@ -70,6 +70,7 @@ export const useSpaceStore = defineStore("space", {
             resultList.push(this.space[key]);
           }
         } else {
+          // 将所有子级都展示
           resultList.push(this.space[key]);
         }
       }

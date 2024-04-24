@@ -30,7 +30,6 @@ const listCommand: CommandType = {
     const { listItems, currentDir } = useSpaceStore();
     let dir = _[0] ?? currentDir;
     const resultList = listItems(dir, recursive);
-    terminal.writeTextResult(`当前目录 ${dir}：`);
     resultList.forEach((item) => {
       let output = `${item.name} ${item.link}`;
       if (item.type === "dir") {
