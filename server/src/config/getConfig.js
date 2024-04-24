@@ -1,6 +1,6 @@
 /**
  * 获取当前环境的配置
- * @author yupi
+ * @author zwf021123
  */
 let config;
 const env = process.env.NODE_ENV ?? "local";

@@ -6,7 +6,7 @@ const baseUrl = "https://www.baidu.com/s";
 
 /**
  * B 站搜索命令
- * @author yupi
+ * @author zwf021123
  */
 const bilibiliCommand: CommandType = {
   func: "bilibili",

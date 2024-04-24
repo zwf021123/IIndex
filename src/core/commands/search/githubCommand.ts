@@ -2,7 +2,7 @@ import { CommandType } from "@/types/command";
 
 /**
  * GitHub 搜索命令
- * @author yupi
+ * @author zwf021123
  */
 const githubCommand: CommandType = {
   func: "github",

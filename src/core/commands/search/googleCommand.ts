@@ -2,7 +2,7 @@ import { CommandType } from "@/types/command";
 
 /**
  * Google 搜索命令
- * @author yupi
+ * @author zwf021123
  */
 const googleCommand: CommandType = {
   func: "google",

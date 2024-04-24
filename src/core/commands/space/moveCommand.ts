@@ -1,5 +1,5 @@
 import { CommandType } from "@/types/command";
-import { useSpaceStore } from "./spaceStore";
+import { useSpaceStore } from "@/stores";
 
 /**
  * 移动目录（重命名）

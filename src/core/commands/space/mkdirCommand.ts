@@ -1,6 +1,6 @@
 import { CommandType } from "@/types/command";
-import { SpaceItemType } from "./spaceCommands";
-import { useSpaceStore } from "./spaceStore";
+import { SpaceItemType } from "@/types/space";
+import { useSpaceStore } from "@/stores";
 
 /**
  * 创建目录

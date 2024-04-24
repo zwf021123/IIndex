@@ -3,7 +3,7 @@ import { defineStore } from "pinia";
 /**
  * 终端配置状态存储
  *
- * @author yupi
+ * @author zwf021123
  */
 export const useTerminalConfigStore = defineStore("terminalConfig", {
   state: () => ({

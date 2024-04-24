@@ -2,7 +2,7 @@ import { CommandType } from "@/types/command";
 
 /**
  * 查看历史命令
- * @author yupi
+ * @author zwf021123
  */
 const historyCommand: CommandType = {
   func: "history",

@@ -5,7 +5,7 @@ import ComponentOutputType = YuTerminal.ComponentOutputType;
 
 /**
  * 帮助命令
- * @author yupi
+ * @author zwf021123
  */
 const helpCommand: CommandType = {
   func: "help",

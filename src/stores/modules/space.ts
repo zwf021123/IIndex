@@ -1,12 +1,12 @@
 import { defineStore } from "pinia";
-import { SpaceItemType, SpaceType } from "./spaceCommands";
+import { SpaceItemType, SpaceType } from "@/types/space";
 
 /**
  * 空间状态（类似文件系统实现）
  */
 export const useSpaceStore = defineStore("space", {
   state: () => ({
-    // 空间
+    // 扁平化存储空间
     space: {
       // 默认包含根目录
       "/": {
@@ -19,17 +19,6 @@ export const useSpaceStore = defineStore("space", {
     currentDir: "/",
   }),
   getters: {},
-  // 持久化
-  persist: {
-    key: "space-store",
-    storage: window.localStorage,
-    beforeRestore: (context) => {
-      console.log("load spaceStore data start");
-    },
-    afterRestore: (context) => {
-      console.log("load spaceStore data end");
-    },
-  },
   actions: {
     /**
      * 获取单条目
@@ -70,6 +59,7 @@ export const useSpaceStore = defineStore("space", {
             resultList.push(this.space[key]);
           }
         } else {
+          // 将所有子级都展示
           resultList.push(this.space[key]);
         }
       }
@@ -172,7 +162,7 @@ export const useSpaceStore = defineStore("space", {
     updateCurrentDir(newDir: string) {
       let fullPath = getFullPath(this.currentDir, newDir);
       // 上层目录
-      if (newDir === "..") {
+      if (newDir === "../") {
         // 已经是根目录，无法到上层
         if (this.currentDir === "/") {
           return false;
@@ -186,6 +176,16 @@ export const useSpaceStore = defineStore("space", {
       }
       this.currentDir = fullPath;
       return true;
+    },
+  },
+  // 持久化(默认是存储到loacalStorage)
+  persist: {
+    key: "space-store",
+    beforeRestore: (context) => {
+      console.log("load spaceStore data start");
+    },
+    afterRestore: (context) => {
+      console.log("load spaceStore data end");
     },
   },
 });

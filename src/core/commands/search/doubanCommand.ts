@@ -2,7 +2,7 @@ import { CommandType } from "@/types/command";
 
 /**
  * 豆瓣搜索命令
- * @author yupi
+ * @author zwf021123
  */
 const doubanCommand: CommandType = {
   func: "douban",

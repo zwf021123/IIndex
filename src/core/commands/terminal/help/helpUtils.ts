@@ -1,4 +1,4 @@
-import { CommandOptionType, CommandType } from "../../../command";
+import { CommandOptionType, CommandType } from "@/types/command";
 
 /**
  * 拼接用法字符串

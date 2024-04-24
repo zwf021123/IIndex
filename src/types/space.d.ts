@@ -1,14 +1,14 @@
 /**
  * 空间类型（扁平）
  */
-interface SpaceType {
+export interface SpaceType {
   [dir: string]: SpaceItemType;
 }
 
 /**
  * 空间项类型
  */
-interface SpaceItemType {
+export interface SpaceItemType {
   // 条目 / 目录名
   name: string;
   link?: string;

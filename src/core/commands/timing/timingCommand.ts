@@ -4,7 +4,7 @@ import ComponentOutputType = YuTerminal.ComponentOutputType;
 
 /**
  * 定时命令
- * @author yupi
+ * @author zwf021123
  */
 const timingCommand: CommandType = {
   func: "timing",

@@ -40,7 +40,7 @@ const fromDict: Record<string, CommandType> = {
 
 /**
  * 搜索命令
- * @author yupi
+ * @author zwf021123
  */
 const searchCommand: CommandType = {
   func: "search",

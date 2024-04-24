@@ -1,6 +1,6 @@
 /**
  * 快捷键系统
- * @author yupi
+ * @author zwf021123
  */
 import TerminalType = YuTerminal.TerminalType;
 

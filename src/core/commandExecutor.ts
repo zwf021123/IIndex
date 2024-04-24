@@ -1,6 +1,6 @@
 import getopts, { ParsedOptions } from "getopts";
 import { commandMap } from "./commandRegister";
-import { CommandOptionType, CommandType } from "./command";
+import { CommandOptionType, CommandType } from "@/types/command";
 import TerminalType = YuTerminal.TerminalType;
 import helpCommand from "./commands/terminal/help/helpCommand";
 

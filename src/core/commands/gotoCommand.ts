@@ -1,9 +1,9 @@
 import { CommandType } from "@/types/command";
-import { useSpaceStore } from "./space/spaceStore";
+import { useSpaceStore } from "@/stores";
 
 /**
  * 跳转命令
- * @author yupi
+ * @author zwf021123
  */
 export default {
   func: "goto",

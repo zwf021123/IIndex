@@ -2,7 +2,7 @@ import { CommandType } from "@/types/command";
 
 /**
  * 编程导航搜索命令
- * @author yupi
+ * @author zwf021123
  */
 const codenavCommand: CommandType = {
   func: "codenav",

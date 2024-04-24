@@ -2,7 +2,7 @@ import { CommandType } from "@/types/command";
 
 /**
  * 查梗（小鸡词典）命令
- * @author yupi
+ * @author zwf021123
  */
 const gengCommand: CommandType = {
   func: "geng",

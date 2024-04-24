@@ -5,7 +5,7 @@ import { LOCAL_USER } from "../userConstant";
 
 /**
  * 用户注销命令
- * @author yupi
+ * @author zwf021123
  */
 const logoutCommand: CommandType = {
   func: "logout",

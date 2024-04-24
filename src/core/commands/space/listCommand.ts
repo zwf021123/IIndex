@@ -1,6 +1,6 @@
 import { CommandType } from "@/types/command";
 import { ParsedOptions } from "getopts";
-import { useSpaceStore } from "./spaceStore";
+import { useSpaceStore } from "@/stores";
 
 /**
  * 列举

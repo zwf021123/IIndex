@@ -1,5 +1,5 @@
 import { CommandType } from "@/types/command";
-import { useSpaceStore } from "./spaceStore";
+import { useSpaceStore } from "@/stores";
 
 /**
  * 显示当前所在目录

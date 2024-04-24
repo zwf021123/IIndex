@@ -2,7 +2,7 @@ import { CommandType } from "@/types/command";
 
 /**
  * 网易云搜索命令
- * @author yupi
+ * @author zwf021123
  */
 const wangyiyunCommand: CommandType = {
   func: "wangyiyun",
