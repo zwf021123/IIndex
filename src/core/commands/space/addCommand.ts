@@ -55,11 +55,11 @@ const addCommand: CommandType = {
       name,
       type: "link",
     };
-    const result = spaceStore.addItem(item);
+    const { result, message } = spaceStore.addItem(item);
     if (result) {
-      terminal.writeTextResult("添加成功", "success");
+      terminal.writeTextSuccessResult("添加成功");
     } else {
-      terminal.writeTextErrorResult("添加失败");
+      terminal.writeTextErrorResult(message ?? "添加失败");
     }
   },
 };

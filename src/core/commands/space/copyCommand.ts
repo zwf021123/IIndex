@@ -37,11 +37,11 @@ const copyCommand: CommandType = {
     }
     const spaceStore = useSpaceStore();
     const [source, target] = _;
-    const result = spaceStore.copyItem(source, target, recursive);
+    const { result, message } = spaceStore.copyItem(source, target, recursive);
     if (result) {
       terminal.writeTextSuccessResult("复制成功");
     } else {
-      terminal.writeTextErrorResult("复制失败");
+      terminal.writeTextErrorResult(message ?? "复制失败");
     }
   },
 };

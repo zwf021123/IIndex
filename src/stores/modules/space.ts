@@ -1,5 +1,5 @@
 import { defineStore } from "pinia";
-import { SpaceItemType, SpaceType } from "@/types/space";
+import { SpaceItemType, SpaceType, ResultType } from "@/types/space";
 
 /**
  * 空间状态（类似文件系统实现）
@@ -69,29 +69,40 @@ export const useSpaceStore = defineStore("space", {
      * 添加条目
      * @param item
      */
-    addItem(item: SpaceItemType) {
+    addItem(item: SpaceItemType): ResultType {
       const fullPath = getFullPath(item.dir, item.name);
       // 目录不存在
       if (!this.space[item.dir]) {
-        return false;
+        return {
+          result: false,
+          message: "目录不存在",
+        };
       }
       // 文件已存在 todo 支持覆盖
       if (this.space[fullPath]) {
-        return false;
+        return {
+          result: false,
+          message: "文件已存在",
+        };
       }
       this.space[fullPath] = item;
-      return true;
+      return {
+        result: true,
+      };
     },
     /**
      * 删除条目
      * @param key
      * @param recursive
      */
-    deleteItem(key: string, recursive = false) {
+    deleteItem(key: string, recursive = false): ResultType {
       const fullPath = getFullPath(this.currentDir, key);
       // 目录不存在
       if (!this.space[fullPath]) {
-        return false;
+        return {
+          result: false,
+          message: "目录/文件不存在",
+        };
       }
       const deleteKeyList = [fullPath];
       // 需要递归删除
@@ -106,7 +117,9 @@ export const useSpaceStore = defineStore("space", {
       deleteKeyList.forEach((deleteKey) => {
         delete this.space[deleteKey];
       });
-      return true;
+      return {
+        result: true,
+      };
     },
     /**
      * 复制条目
@@ -114,28 +127,40 @@ export const useSpaceStore = defineStore("space", {
      * @param target
      * @param recursive
      */
-    copyItem(source: string, target: string, recursive = false) {
+    copyItem(source: string, target: string, recursive = false): ResultType {
       // e.g. /a/b => /a/c
       const sourceFullPath = getFullPath(this.currentDir, source);
       const targetFullPath = getFullPath(this.currentDir, target);
       // 源条目不存在
       const sourceItem = this.space[sourceFullPath];
       if (!sourceItem) {
-        return false;
+        return {
+          result: false,
+          message: "源文件不存在",
+        };
       }
       // 复制目录必须开启递归
       if (sourceItem.type === "dir" && !recursive) {
-        return false;
+        return {
+          result: false,
+          message: "目录复制必须开启递归",
+        };
       }
       // todo 待实现递归
       // 目标条目已存在
       if (this.space[targetFullPath]) {
-        return false;
+        return {
+          result: false,
+          message: "目标文件已存在",
+        };
       }
       // 目标目录不存在
       const targetParentDir = getParentDir(targetFullPath);
       if (!this.space[targetParentDir]) {
-        return false;
+        return {
+          result: false,
+          message: "目标目录不存在",
+        };
       }
       const targetItem = { ...sourceItem };
       targetItem.dir = targetParentDir;
@@ -148,7 +173,7 @@ export const useSpaceStore = defineStore("space", {
      * @param target
      * @param recursive
      */
-    moveItem(source: string, target: string, recursive = false) {
+    moveItem(source: string, target: string, recursive = false): ResultType {
       let result = this.copyItem(source, target, recursive);
       if (result) {
         result = this.deleteItem(source, recursive);
@@ -159,23 +184,31 @@ export const useSpaceStore = defineStore("space", {
      * 更新当前所在目录
      * @param newDir
      */
-    updateCurrentDir(newDir: string) {
+    updateCurrentDir(newDir: string): ResultType {
       let fullPath = getFullPath(this.currentDir, newDir);
       // 上层目录
       if (newDir === "../") {
         // 已经是根目录，无法到上层
         if (this.currentDir === "/") {
-          return false;
+          return {
+            result: false,
+            message: "已经是根目录",
+          };
         } else {
           fullPath = getParentDir(this.currentDir);
         }
       }
       // 目录不存在
       if (!this.space[fullPath]) {
-        return false;
+        return {
+          result: false,
+          message: "目录不存在",
+        };
       }
       this.currentDir = fullPath;
-      return true;
+      return {
+        result: true,
+      };
     },
   },
   // 持久化(默认是存储到loacalStorage)

@@ -16,3 +16,11 @@ export interface SpaceItemType {
   dir: string;
   type: "dir" | "link";
 }
+
+/**
+ * 返回值类型
+ */
+export interface ResultType {
+  result: boolean;
+  message?: string;
+}

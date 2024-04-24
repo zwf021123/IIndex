@@ -44,11 +44,11 @@ const removeCommand: CommandType = {
       return;
     }
     const spaceStore = useSpaceStore();
-    const result = spaceStore.deleteItem(deleteKey, recursive);
+    const { result, message } = spaceStore.deleteItem(deleteKey, recursive);
     if (result) {
       terminal.writeTextResult("操作成功");
     } else {
-      terminal.writeTextErrorResult("操作失败");
+      terminal.writeTextErrorResult(message ?? "操作失败");
     }
   },
 };

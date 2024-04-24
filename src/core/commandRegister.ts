@@ -1,7 +1,7 @@
 import { CommandType } from "@/types/command";
 import searchCommands from "./commands/search/searchCommands";
 import gotoCommand from "./commands/gotoCommand";
-import spaceCommands from "./commands/space/spaceCommands";
+import spaceCommands from "./commands/space";
 import dateCommand from "./commands/dateCommand";
 import clearCommand from "./commands/terminal/clearCommand";
 import historyCommand from "./commands/terminal/historyCommand";

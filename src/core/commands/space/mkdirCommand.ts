@@ -29,11 +29,11 @@ const mkdirCommand: CommandType = {
       name: newDir,
       type: "dir",
     };
-    const result = spaceStore.addItem(item);
+    const { result, message } = spaceStore.addItem(item);
     if (result) {
       terminal.writeTextResult("创建目录成功");
     } else {
-      terminal.writeTextErrorResult("创建目录失败");
+      terminal.writeTextErrorResult(message ?? "创建目录失败");
     }
   },
 };

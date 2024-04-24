@@ -37,11 +37,11 @@ const moveCommand: CommandType = {
     }
     const spaceStore = useSpaceStore();
     const [source, target] = _;
-    const result = spaceStore.moveItem(source, target, recursive);
+    const { result, message } = spaceStore.moveItem(source, target, recursive);
     if (result) {
       terminal.writeTextResult("移动成功");
     } else {
-      terminal.writeTextErrorResult("移动失败");
+      terminal.writeTextErrorResult(message ?? "移动失败");
     }
   },
 };
