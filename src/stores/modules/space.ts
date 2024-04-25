@@ -210,6 +210,30 @@ export const useSpaceStore = defineStore("space", {
         result: true,
       };
     },
+    /**
+     * 路径补全
+     */
+    autoCompletePath(path: string): string {
+      // 根据当前路径(默认)以及用户输入的部分路径进行补全
+      // e.g. ./createDir/zhi  => ./createDir/zhihu
+      // e.g. ./crea  => ./createDir
+      // e.g. ../zhi  => ../zhihu
+      const index = path.lastIndexOf("/") + 1;
+      if (index === 0) return "";
+      const prePath = path.substring(0, index);
+      const nxtPath = path.substring(index);
+      // 调用 getFullPath 处理./ ../
+      const tempName = getFullPath(this.currentDir, prePath);
+      // 拼接可能的路径前缀
+      const result = Object.keys(this.space).filter((key) =>
+        key.startsWith(tempName + nxtPath)
+      )[0];
+      if (result) {
+        //返回用户输入的部分路径
+        return prePath + result.substring(tempName.length);
+      }
+      return "";
+    },
   },
   // 持久化(默认是存储到loacalStorage)
   persist: {
@@ -224,7 +248,7 @@ export const useSpaceStore = defineStore("space", {
 });
 
 /**
- * 获得条目全路径
+ * 获得条目绝对路径
  * @param dir 目录
  * @param name 条目名称（位置）
  */

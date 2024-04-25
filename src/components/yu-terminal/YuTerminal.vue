@@ -182,6 +182,8 @@ const isRunning = ref(false);
 // 引入终端配置状态
 const configStore = useTerminalConfigStore();
 
+const spaceStore = useSpaceStore();
+
 /**
  * 初始命令
  */
@@ -389,11 +391,30 @@ const setTabCompletion = () => {
     const wordArr = inputCommand.value.text.split(/\s+/);
     const hintArr = hint.value.split(/\s+/);
     const wordNum = wordArr.length;
-    // 将当前输入个数的单词替换为提示的单词(除了用户输入之前的)
-    inputCommand.value.text = [
-      ...wordArr.slice(0, wordNum - 1),
-      hintArr[wordNum - 1],
-    ].join(" ");
+    const currentHintWord = hintArr[wordNum - 1];
+    const currentWord = wordArr[wordNum - 1];
+    // 判断当前输入的位置信息为路径还是命令（判断当前的hint值是否包含“目录”或“路径”）
+    // 如果是路径则需要进行路径补全(补全功能集成在getFullPath方法中x
+    // 还是得新建一个方法进行补全，不然使用getFullPath补全会一直补全为绝对路径
+    // )
+    // 如果是命令则需要进行命令补全
+    if (
+      currentHintWord.indexOf("目录") !== -1 ||
+      currentHintWord.indexOf("路径") !== -1
+    ) {
+      // 路径补全
+      inputCommand.value.text = [
+        ...wordArr.slice(0, wordNum - 1),
+        spaceStore.autoCompletePath(currentWord),
+      ].join(" ");
+    } else {
+      // 命令补全
+      // 将当前输入个数的单词替换为提示的单词(除了用户输入之前的)
+      inputCommand.value.text = [
+        ...wordArr.slice(0, wordNum - 1),
+        hintArr[wordNum - 1],
+      ].join(" ");
+    }
   }
 };
 
