@@ -5,7 +5,7 @@ const myAxios = axios.create({
   baseURL:
     // @ts-ignore
     process.env.NODE_ENV === "production"
-      ? "https://yuindex-server-974538-1256524210.ap-shanghai.run.tcloudbase.com/api"
+      ? "https://express-inmm-104273-5-1323149302.sh.run.tcloudbase.com/api"
       : "http://localhost:7345/api",
 });
 
