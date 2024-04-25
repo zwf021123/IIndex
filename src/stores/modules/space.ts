@@ -199,7 +199,7 @@ export const useSpaceStore = defineStore("space", {
         }
       }
       // 目录不存在
-      if (!this.space[fullPath]) {
+      if (!this.space[fullPath] || this.space[fullPath].type !== "dir") {
         return {
           result: false,
           message: "目录不存在",
@@ -230,12 +230,14 @@ export const useSpaceStore = defineStore("space", {
  */
 const getFullPath = (dir: string, name: string): string => {
   // 需要对name的前缀进行处理例如./ / ../
+  // e.g. ./a/b => /a/b   ../../../a/b => /a/b
   if (name.startsWith("/")) {
     return name;
   } else if (name.startsWith("./")) {
-    return name.substring(1);
+    return getFullPath(dir, name.substring(2));
   } else if (name.startsWith("../")) {
     // 如果包含多个../需要递归处理
+    return getFullPath(getParentDir(dir), name.substring(3));
   }
   return dir + (dir === "/" ? "" : "/") + name;
 };

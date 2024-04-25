@@ -23,6 +23,7 @@ const useHistory = (
   const showNextCommand = () => {
     console.log(commandHistoryPos.value, commandList, inputCommand);
     if (commandHistoryPos.value < commandList.length - 1) {
+      commandHistoryPos.value++;
       inputCommand.value.text = commandList[commandHistoryPos.value].text;
     } else if (commandHistoryPos.value === commandList.length - 1) {
       inputCommand.value.text = "";
