@@ -1,7 +1,5 @@
 # IIndex 后端
 
-> 欢迎加入 [鱼皮的编程知识星球](https://yupi.icu/) ，获取完整的项目讲解，帮助你更好地学编程 ⭐️
-
 ## 技术栈
 
 主要技术：
@@ -56,7 +54,7 @@ dbConfig: {
 2）安装依赖：
 
 ```
-npm i 
+npm i
 ```
 
 3）启动服务：
@@ -145,4 +143,3 @@ CMD pm2-runtime 'npm start'
 - Dockerfile 镜像构建
 - package.json 项目依赖文件
 - yarn.lock 依赖锁定
-

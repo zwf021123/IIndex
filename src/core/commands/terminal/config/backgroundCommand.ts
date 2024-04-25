@@ -1,6 +1,6 @@
 import { CommandType } from "@/types/command";
 import { useTerminalConfigStore } from "./terminalConfigStore";
-import myAxios from "../../../../plugins/myAxios";
+import myAxios from "@/plugins/myAxios";
 
 /**
  * 切换终端背景
