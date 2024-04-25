@@ -10,4 +10,4 @@ for (const route of routes) {
 }
 
 // 监听端口
-server.listen(7345);
+server.listen(80);
