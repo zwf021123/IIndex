@@ -6,6 +6,7 @@ import pwdCommand from "./pwdCommand";
 import cdCommand from "./cdCommand";
 import moveCommand from "./moveCommand";
 import copyCommand from "./copyCommand";
+import updateCommand from "./updateCommand";
 
 /**
  * 空间命令，类似文件系统 + 收藏夹
@@ -19,4 +20,5 @@ export default [
   cdCommand,
   moveCommand,
   copyCommand,
+  updateCommand,
 ];

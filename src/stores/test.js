@@ -33,7 +33,12 @@ function main() {
   // console.log(getFullPath("/", "./a/b"));
   // console.log(getFullPath("/", "../a/b"));
   // console.log(getFullPath("/", "../../a/b"));
-  console.log(getFullPath("/", ""));
-  console.log(getFullPath("/newDir", ""));
+  // console.log(getFullPath("/", ""));
+  // console.log(getFullPath("/newDir", ""));
+  const p = /^(\/|(\/[\w\-]+)+)?$/;
+  console.log(p.test("/a/b"));
+  console.log(p.test("/a/b/"));
+  console.log(p.test("/"));
+  console.log(p.test("//"));
 }
 main();

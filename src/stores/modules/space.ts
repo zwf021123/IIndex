@@ -1,5 +1,7 @@
 import { defineStore } from "pinia";
 import { SpaceItemType, SpaceType, ResultType } from "@/types/space";
+import { pathReg } from "@/constants/regExp";
+import { get } from "lodash";
 
 /**
  * 空间状态（类似文件系统实现）
@@ -71,6 +73,13 @@ export const useSpaceStore = defineStore("space", {
      */
     addItem(item: SpaceItemType): ResultType {
       const fullPath = getFullPath(item.dir, item.name);
+      // 非法路径
+      if (!pathReg.test(fullPath)) {
+        return {
+          result: false,
+          message: "路径不合法",
+        };
+      }
       // 目录不存在
       if (!this.space[item.dir]) {
         return {
@@ -78,7 +87,6 @@ export const useSpaceStore = defineStore("space", {
           message: "目录不存在",
         };
       }
-      // 文件已存在 todo 支持覆盖
       if (this.space[fullPath]) {
         return {
           result: false,
@@ -97,6 +105,13 @@ export const useSpaceStore = defineStore("space", {
      */
     deleteItem(key: string, recursive = false): ResultType {
       const fullPath = getFullPath(this.currentDir, key);
+      // 非法路径
+      if (!pathReg.test(fullPath)) {
+        return {
+          result: false,
+          message: "路径不合法",
+        };
+      }
       // 目录不存在
       if (!this.space[fullPath]) {
         return {
@@ -122,21 +137,89 @@ export const useSpaceStore = defineStore("space", {
       };
     },
     /**
+     * 递归复制目录
+     */
+    copyDirectory(sourcePath: string, targetPath: string): ResultType {
+      // console.log("sourcePath", sourcePath, "targetPath", targetPath);
+
+      const items = this.listItems(sourcePath, true);
+      // console.log("items", items);
+      const itemName = getItemName(sourcePath);
+      const newDirPath = targetPath + itemName;
+      if (!this.space[newDirPath]) {
+        this.addItem({
+          dir: targetPath,
+          name: itemName,
+          type: "dir",
+        });
+      }
+      for (const item of items) {
+        // 计算在目标目录中的路径
+        const targetItemPath = targetPath + itemName + "/" + item.name;
+        // console.log("targetItemPath", targetItemPath);
+
+        // 如果这一项是一个目录，则递归调用 copyDirectory
+        if (item.type === "dir") {
+          this.copyDirectory(item.dir, targetItemPath);
+        } else {
+          // 否则，直接复制这一项
+          this.space[targetItemPath] = { ...item, dir: targetPath + itemName };
+        }
+      }
+      return {
+        result: true,
+      };
+    },
+    updateItem(dir: string, name: string, link: string): ResultType {
+      const fullPath = getFullPath(this.currentDir, dir);
+      // 非法路径
+      if (!pathReg.test(fullPath)) {
+        return {
+          result: false,
+          message: "路径不合法",
+        };
+      }
+      // 目录不存在
+      if (!this.space[fullPath]) {
+        return {
+          result: false,
+          message: "目录不存在",
+        };
+      }
+      this.space[fullPath] = {
+        ...this.space[fullPath],
+        name,
+        link,
+      };
+      return {
+        result: true,
+      };
+    },
+
+    /**
      * 复制条目
      * @param source
      * @param target
      * @param recursive
+     * 需要注意的是，复制的文件或目录以原目录或文件名命名
      */
     copyItem(source: string, target: string, recursive = false): ResultType {
       // e.g. /a/b => /a/c
       const sourceFullPath = getFullPath(this.currentDir, source);
       const targetFullPath = getFullPath(this.currentDir, target);
+      // 非法路径
+      if (!pathReg.test(sourceFullPath) || !pathReg.test(targetFullPath)) {
+        return {
+          result: false,
+          message: "存在非法路径",
+        };
+      }
       // 源条目不存在
       const sourceItem = this.space[sourceFullPath];
       if (!sourceItem) {
         return {
           result: false,
-          message: "源文件不存在",
+          message: "源条目不存在",
         };
       }
       // 复制目录必须开启递归
@@ -146,25 +229,29 @@ export const useSpaceStore = defineStore("space", {
           message: "目录复制必须开启递归",
         };
       }
-      // todo 待实现递归
+
       // 目标条目已存在
-      if (this.space[targetFullPath]) {
+      const tempPath = targetFullPath + "/" + getItemName(sourceFullPath);
+      if (this.space[tempPath]) {
         return {
           result: false,
           message: "目标文件已存在",
         };
       }
       // 目标目录不存在
-      const targetParentDir = getParentDir(targetFullPath);
-      if (!this.space[targetParentDir]) {
+      if (!this.space[targetFullPath]) {
         return {
           result: false,
           message: "目标目录不存在",
         };
       }
+      if (sourceItem.type === "dir" && recursive) {
+        return this.copyDirectory(sourceFullPath, targetFullPath);
+      }
+
       const targetItem = { ...sourceItem };
-      targetItem.dir = targetParentDir;
-      targetItem.name = getItemName(targetFullPath);
+      targetItem.dir = targetFullPath;
+      targetItem.name = getItemName(sourceFullPath);
       return this.addItem(targetItem);
     },
     /**
@@ -186,6 +273,15 @@ export const useSpaceStore = defineStore("space", {
      */
     updateCurrentDir(newDir: string): ResultType {
       let fullPath = getFullPath(this.currentDir, newDir);
+      // console.log("fullPath", fullPath);
+
+      // 非法路径
+      if (!pathReg.test(fullPath)) {
+        return {
+          result: false,
+          message: "路径不合法",
+        };
+      }
       // 上层目录
       if (newDir === "../") {
         // 已经是根目录，无法到上层
@@ -200,6 +296,14 @@ export const useSpaceStore = defineStore("space", {
       }
       // 目录不存在
       if (!this.space[fullPath] || this.space[fullPath].type !== "dir") {
+        // 尝试将最后的斜杠去掉
+        const temp = fullPath.slice(0, -1);
+        if (this.space[temp]) {
+          this.currentDir = temp;
+          return {
+            result: true,
+          };
+        }
         return {
           result: false,
           message: "目录不存在",
@@ -218,8 +322,13 @@ export const useSpaceStore = defineStore("space", {
       // e.g. ./createDir/zhi  => ./createDir/zhihu
       // e.g. ./crea  => ./createDir
       // e.g. ../zhi  => ../zhihu
-      const index = path.lastIndexOf("/") + 1;
-      if (index === 0) return "";
+      // e.g. zhi  => ./zhihu
+      let index = path.lastIndexOf("/") + 1;
+      if (index === 0) {
+        // 处理e.g createDir => ./createDir
+        path = "./" + path;
+        index = 2;
+      }
       const prePath = path.substring(0, index);
       const nxtPath = path.substring(index);
       // 调用 getFullPath 处理./ ../
