@@ -4,6 +4,7 @@
       :src="currentGame"
       class="main"
       frameborder="no"
+      scrolling="no"
       marginwidth="0"
       marginheight="0"
     />
@@ -20,7 +21,6 @@ const gameList = [
   "https://haiyong.site/moyu/dadishu.html",
   "https://haiyong.site/moyu/laganziguoguan/",
   "https://haiyong.site/moyu/danzhu.html",
-  "https://haiyong.site/moyu/feiji.html",
   "https://haiyong.site/moyu/doudizhu.html",
   "https://haiyong.site/moyu/tiaofangzi.html",
   "https://haiyong.site/moyu/SpaceHuggers/",
@@ -35,5 +35,6 @@ const currentGame = gameList[Math.floor(Math.random() * gameList.length)];
   width: 100%;
   height: 80vh;
   min-height: 600px;
+  overflow: hidden;
 }
 </style>
