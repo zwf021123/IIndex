@@ -28,11 +28,12 @@ myAxios.interceptors.request.use(
 myAxios.interceptors.response.use(
   function (response) {
     console.log(response);
-    message.error(response.data.message);
     // 对响应数据做点什么
     return response.data;
   },
   function (error) {
+    console.log(error);
+    message.error(error);
     // 对响应错误做点什么
     return Promise.reject(error);
   }

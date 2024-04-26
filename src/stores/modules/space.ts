@@ -170,6 +170,31 @@ export const useSpaceStore = defineStore("space", {
         result: true,
       };
     },
+    /**
+     * 递归更新目录下全部内容
+     */
+    updateDirectory(oldPath: string, newName: string): ResultType {
+      const items = this.listItems(oldPath, true);
+      for (const item of items) {
+        // 计算在目标目录中的路径
+        const tempFullPath = getFullPath(item.dir, item.name);
+        const tempArr = item.dir.split("/");
+        tempArr[1] = newName;
+        item.dir = tempArr.join("/");
+        this.addItem({ ...item });
+        this.deleteItem(tempFullPath, false);
+      }
+      return {
+        result: true,
+      };
+    },
+    /**
+     *
+     * 更新条目（先删除原先的，再添加新的）
+     * @param dir
+     * @param name
+     * @param link
+     */
     updateItem(dir: string, name: string, link: string): ResultType {
       const fullPath = getFullPath(this.currentDir, dir);
       // 非法路径
@@ -186,14 +211,29 @@ export const useSpaceStore = defineStore("space", {
           message: "目录不存在",
         };
       }
-      this.space[fullPath] = {
-        ...this.space[fullPath],
-        name,
-        link,
-      };
-      return {
-        result: true,
-      };
+      if (this.space[fullPath].type === "dir") {
+        // 递归更新子目录
+        // return {
+        //   result: false,
+        //   message: "目录暂时不支持更新",
+        // };
+        let result = this.addItem({
+          ...this.space[fullPath],
+          name,
+        });
+        result = this.deleteItem(fullPath, false);
+        result = this.updateDirectory(fullPath, name);
+        return result;
+      } else {
+        const newItem = {
+          ...this.space[fullPath],
+          name,
+          link,
+        };
+        let result = this.addItem(newItem);
+        result = this.deleteItem(fullPath, false);
+        return result;
+      }
     },
 
     /**
