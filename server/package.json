@@ -1,7 +1,7 @@
 {
-  "name": "yuindex-server",
+  "name": "iindex-server",
   "version": "0.0.1",
-  "description": "yuindex-server",
+  "description": "iindex-server",
   "main": "src/index.js",
   "scripts": {
     "start:dev": "cross-env NODE_ENV=local node src/index.js ",
