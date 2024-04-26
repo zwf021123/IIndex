@@ -31,7 +31,7 @@ const addCommand: CommandType = {
       type: "string",
     },
   ],
-  action(options, terminal): void {
+  async action(options, terminal): Promise<void> {
     let { _, name, link, dir } = options;
     const spaceStore = useSpaceStore();
     if (!dir) {
@@ -55,11 +55,11 @@ const addCommand: CommandType = {
       name,
       type: "link",
     };
-    const { result, message } = spaceStore.addItem(item);
-    if (result) {
+    try {
+      await spaceStore.addItem(item);
       terminal.writeTextSuccessResult("添加成功");
-    } else {
-      terminal.writeTextErrorResult(message ?? "添加失败");
+    } catch (errMsg: any) {
+      terminal.writeTextErrorResult(errMsg);
     }
   },
 };

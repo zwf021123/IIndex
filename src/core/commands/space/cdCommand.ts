@@ -15,16 +15,16 @@ const cdCommand: CommandType = {
     },
   ],
   options: [],
-  action(options, terminal): void {
+  async action(options, terminal): Promise<void> {
     const { _ } = options;
     // 如果没有参数就回到根目录
     const targetDir = _[0];
     const spaceStore = useSpaceStore();
-    const { result, message } = spaceStore.updateCurrentDir(targetDir || "/");
-    if (result) {
+    try {
+      await spaceStore.updateCurrentDir(targetDir || "/");
       terminal.writeTextSuccessResult(`已切换至目录：${spaceStore.currentDir}`);
-    } else {
-      terminal.writeTextErrorResult(message ?? "切换目录失败");
+    } catch (errMsg: any) {
+      terminal.writeTextErrorResult(errMsg);
     }
   },
 };

@@ -1,7 +1,7 @@
 import { defineStore } from "pinia";
 import { SpaceItemType, SpaceType, ResultType } from "@/types/space";
 import { pathReg } from "@/constants/regExp";
-import { get } from "lodash";
+import { get, reject } from "lodash";
 
 /**
  * 空间状态（类似文件系统实现）
@@ -71,104 +71,99 @@ export const useSpaceStore = defineStore("space", {
      * 添加条目
      * @param item
      */
-    addItem(item: SpaceItemType): ResultType {
-      const fullPath = getFullPath(item.dir, item.name);
-      // 非法路径
-      if (!pathReg.test(fullPath)) {
-        return {
-          result: false,
-          message: "路径不合法",
-        };
-      }
-      // 目录不存在
-      if (!this.space[item.dir]) {
-        return {
-          result: false,
-          message: "目录不存在",
-        };
-      }
-      if (this.space[fullPath]) {
-        return {
-          result: false,
-          message: "文件已存在",
-        };
-      }
-      this.space[fullPath] = item;
-      return {
-        result: true,
-      };
+    addItem(item: SpaceItemType): Promise<string> {
+      return new Promise((resolve, reject) => {
+        const fullPath = getFullPath(item.dir, item.name);
+        // 非法路径
+        if (!pathReg.test(fullPath)) {
+          reject("路径不合法");
+          return;
+        }
+        // 目录不存在
+        if (!this.space[item.dir]) {
+          reject("父目录不存在");
+          return;
+        }
+        if (this.space[fullPath]) {
+          reject("目录/文件已存在");
+          return;
+        }
+        this.space[fullPath] = item;
+        resolve(fullPath);
+      });
     },
     /**
      * 删除条目
      * @param key
      * @param recursive
      */
-    deleteItem(key: string, recursive = false): ResultType {
-      const fullPath = getFullPath(this.currentDir, key);
-      // 非法路径
-      if (!pathReg.test(fullPath)) {
-        return {
-          result: false,
-          message: "路径不合法",
-        };
-      }
-      // 目录不存在
-      if (!this.space[fullPath]) {
-        return {
-          result: false,
-          message: "目录/文件不存在",
-        };
-      }
-      const deleteKeyList = [fullPath];
-      // 需要递归删除
-      if (recursive) {
-        for (const spaceKey in this.space) {
-          if (spaceKey.startsWith(fullPath)) {
-            deleteKeyList.push(spaceKey);
+    deleteItem(key: string, recursive = false): Promise<string> {
+      return new Promise((resolve, reject) => {
+        const fullPath = getFullPath(this.currentDir, key);
+        // 非法路径
+        if (!pathReg.test(fullPath)) {
+          reject("路径不合法");
+          return;
+        }
+        // 目录不存在
+        if (!this.space[fullPath]) {
+          reject("目录/文件不存在");
+          return;
+        }
+        const deleteKeyList = [fullPath];
+        // 需要递归删除
+        if (recursive) {
+          for (const spaceKey in this.space) {
+            if (spaceKey.startsWith(fullPath)) {
+              deleteKeyList.push(spaceKey);
+            }
           }
         }
-      }
-      // 移除属性
-      deleteKeyList.forEach((deleteKey) => {
-        delete this.space[deleteKey];
+        // 移除属性
+        deleteKeyList.forEach((deleteKey) => {
+          delete this.space[deleteKey];
+        });
+        resolve(fullPath);
       });
-      return {
-        result: true,
-      };
     },
     /**
      * 递归复制目录
      */
-    copyDirectory(sourcePath: string, targetPath: string): ResultType {
-      // console.log("sourcePath", sourcePath, "targetPath", targetPath);
-
-      const items = this.listItems(sourcePath, true);
-      // console.log("items", items);
-      const itemName = getItemName(sourcePath);
-      const newDirPath = targetPath + itemName;
-      if (!this.space[newDirPath]) {
-        this.addItem({
-          dir: targetPath,
-          name: itemName,
-          type: "dir",
-        });
-      }
-      for (const item of items) {
-        // 计算在目标目录中的路径
-        const targetItemPath = targetPath + itemName + "/" + item.name;
-        // console.log("targetItemPath", targetItemPath);
-
-        // 如果这一项是一个目录，则递归调用 copyDirectory
-        if (item.type === "dir") {
-          this.copyDirectory(item.dir, targetItemPath);
-        } else {
-          // 否则，直接复制这一项
-          this.space[targetItemPath] = { ...item, dir: targetPath + itemName };
+    copyDirectory(sourcePath: string, targetPath: string): Promise<void> {
+      return new Promise((resolve, reject) => {
+        const items = this.listItems(sourcePath, true);
+        // console.log("items", items);
+        const itemName = getItemName(sourcePath);
+        const newDirPath = targetPath + itemName;
+        if (!this.space[newDirPath]) {
+          try {
+            this.addItem({
+              dir: targetPath,
+              name: itemName,
+              type: "dir",
+            });
+          } catch (err) {
+            reject(err);
+          }
         }
-      }
-      return {
-        result: true,
-      };
+        for (const item of items) {
+          // 计算在目标目录中的路径
+          const targetItemPath = targetPath + itemName + "/" + item.name;
+          // console.log("targetItemPath", targetItemPath);
+
+          // 如果这一项是一个目录，则递归调用 copyDirectory
+          if (item.type === "dir") {
+            this.copyDirectory(item.dir, targetItemPath);
+          } else {
+            // 否则，直接复制这一项
+            this.space[targetItemPath] = {
+              ...item,
+              dir: targetPath + itemName,
+            };
+          }
+        }
+        return resolve();
+      });
     },
     /**
      * 递归更新目录下全部内容
@@ -195,45 +190,51 @@ export const useSpaceStore = defineStore("space", {
      * @param name
      * @param link
      */
-    updateItem(dir: string, name: string, link: string): ResultType {
-      const fullPath = getFullPath(this.currentDir, dir);
-      // 非法路径
-      if (!pathReg.test(fullPath)) {
-        return {
-          result: false,
-          message: "路径不合法",
-        };
-      }
-      // 目录不存在
-      if (!this.space[fullPath]) {
-        return {
-          result: false,
-          message: "目录不存在",
-        };
-      }
-      if (this.space[fullPath].type === "dir") {
-        // 递归更新子目录
-        // return {
-        //   result: false,
-        //   message: "目录暂时不支持更新",
-        // };
-        let result = this.addItem({
-          ...this.space[fullPath],
-          name,
-        });
-        result = this.deleteItem(fullPath, false);
-        result = this.updateDirectory(fullPath, name);
-        return result;
-      } else {
-        const newItem = {
-          ...this.space[fullPath],
-          name,
-          link,
-        };
-        let result = this.addItem(newItem);
-        result = this.deleteItem(fullPath, false);
-        return result;
-      }
+    updateItem(dir: string, name: string, link: string): Promise<string> {
+      return new Promise((resolve, reject) => {
+        const fullPath = getFullPath(this.currentDir, dir);
+        // 非法路径
+        if (!pathReg.test(fullPath)) {
+          reject("路径不合法");
+          return;
+        }
+        // 目录不存在
+        if (!this.space[fullPath]) {
+          reject("目录/文件不存在");
+          return;
+        }
+        if (this.space[fullPath].type === "dir") {
+          // 递归更新子目录
+          const p1 = this.addItem({
+            ...this.space[fullPath],
+            name,
+          });
+          const p2 = this.deleteItem(fullPath, false);
+          const p3 = this.updateDirectory(fullPath, name);
+          Promise.all([p1, p2, p3])
+            .then(() => {
+              resolve(fullPath);
+            })
+            .catch((errMsg) => {
+              reject(errMsg);
+            });
+        } else {
+          const newItem = {
+            ...this.space[fullPath],
+            name,
+            link,
+          };
+          const p1 = this.addItem(newItem);
+          const p2 = this.deleteItem(fullPath, false);
+          Promise.all([p1, p2])
+            .then(() => {
+              resolve(fullPath);
+            })
+            .catch((errMsg) => {
+              reject(errMsg);
+            });
+        }
+      });
     },
 
     /**
@@ -243,56 +244,64 @@ export const useSpaceStore = defineStore("space", {
      * @param recursive
      * 需要注意的是，复制的文件或目录以原目录或文件名命名
      */
-    copyItem(source: string, target: string, recursive = false): ResultType {
-      // e.g. /a/b => /a/c
-      const sourceFullPath = getFullPath(this.currentDir, source);
-      const targetFullPath = getFullPath(this.currentDir, target);
-      // 非法路径
-      if (!pathReg.test(sourceFullPath) || !pathReg.test(targetFullPath)) {
-        return {
-          result: false,
-          message: "存在非法路径",
-        };
-      }
-      // 源条目不存在
-      const sourceItem = this.space[sourceFullPath];
-      if (!sourceItem) {
-        return {
-          result: false,
-          message: "源条目不存在",
-        };
-      }
-      // 复制目录必须开启递归
-      if (sourceItem.type === "dir" && !recursive) {
-        return {
-          result: false,
-          message: "目录复制必须开启递归",
-        };
-      }
+    copyItem(
+      source: string,
+      target: string,
+      recursive = false
+    ): Promise<string> {
+      return new Promise((resolve, reject) => {
+        // e.g. /a/b => /a/c
+        const sourceFullPath = getFullPath(this.currentDir, source);
+        const targetFullPath = getFullPath(this.currentDir, target);
+        // 非法路径
+        if (!pathReg.test(sourceFullPath) || !pathReg.test(targetFullPath)) {
+          reject("路径不合法");
+          return;
+        }
+        // 源条目不存在
+        const sourceItem = this.space[sourceFullPath];
+        if (!sourceItem) {
+          reject("原条目不存在");
+          return;
+        }
+        // 复制目录必须开启递归
+        if (sourceItem.type === "dir" && !recursive) {
+          reject("复制目录必须开启递归");
+          return;
+        }
 
-      // 目标条目已存在
-      const tempPath = targetFullPath + "/" + getItemName(sourceFullPath);
-      if (this.space[tempPath]) {
-        return {
-          result: false,
-          message: "目标文件已存在",
-        };
-      }
-      // 目标目录不存在
-      if (!this.space[targetFullPath]) {
-        return {
-          result: false,
-          message: "目标目录不存在",
-        };
-      }
-      if (sourceItem.type === "dir" && recursive) {
-        return this.copyDirectory(sourceFullPath, targetFullPath);
-      }
+        // 目标条目已存在
+        const tempPath = targetFullPath + "/" + getItemName(sourceFullPath);
+        if (this.space[tempPath]) {
+          reject("目标条目已存在");
+          return;
+        }
+        // 目标目录不存在
+        if (!this.space[targetFullPath]) {
+          reject("目标目录不存在");
+          return;
+        }
+        if (sourceItem.type === "dir" && recursive) {
+          this.copyDirectory(sourceFullPath, targetFullPath)
+            .then(() => {
+              resolve(targetFullPath);
+            })
+            .catch((errMsg) => {
+              reject(errMsg);
+            });
+        }
 
-      const targetItem = { ...sourceItem };
-      targetItem.dir = targetFullPath;
-      targetItem.name = getItemName(sourceFullPath);
-      return this.addItem(targetItem);
+        const targetItem = { ...sourceItem };
+        targetItem.dir = targetFullPath;
+        targetItem.name = getItemName(sourceFullPath);
+        this.addItem(targetItem)
+          .then(() => {
+            resolve(targetFullPath);
+          })
+          .catch((errMsg) => {
+            reject(errMsg);
+          });
+      });
     },
     /**
      * 移动条目（等同于复制 + 删除）
@@ -300,59 +309,61 @@ export const useSpaceStore = defineStore("space", {
      * @param target
      * @param recursive
      */
-    moveItem(source: string, target: string, recursive = false): ResultType {
-      let result = this.copyItem(source, target, recursive);
-      if (result) {
-        result = this.deleteItem(source, recursive);
-      }
-      return result;
+    moveItem(
+      source: string,
+      target: string,
+      recursive = false
+    ): Promise<string> {
+      return new Promise((resolve, reject) => {
+        const p1 = this.copyItem(source, target, recursive);
+        const p2 = this.deleteItem(source, recursive);
+        Promise.all([p1, p2])
+          .then(() => {
+            resolve("移动成功");
+          })
+          .catch((errMsg) => {
+            reject(errMsg);
+          });
+      });
     },
     /**
      * 更新当前所在目录
      * @param newDir
      */
-    updateCurrentDir(newDir: string): ResultType {
-      let fullPath = getFullPath(this.currentDir, newDir);
-      // console.log("fullPath", fullPath);
+    updateCurrentDir(newDir: string): Promise<string> {
+      return new Promise((resolve, reject) => {
+        let fullPath = getFullPath(this.currentDir, newDir);
+        // console.log("fullPath", fullPath);
 
-      // 非法路径
-      if (!pathReg.test(fullPath)) {
-        return {
-          result: false,
-          message: "路径不合法",
-        };
-      }
-      // 上层目录
-      if (newDir === "../") {
-        // 已经是根目录，无法到上层
-        if (this.currentDir === "/") {
-          return {
-            result: false,
-            message: "已经是根目录",
-          };
-        } else {
-          fullPath = getParentDir(this.currentDir);
+        // 非法路径
+        if (!pathReg.test(fullPath)) {
+          reject("路径不合法");
+          return;
         }
-      }
-      // 目录不存在
-      if (!this.space[fullPath] || this.space[fullPath].type !== "dir") {
-        // 尝试将最后的斜杠去掉
-        const temp = fullPath.slice(0, -1);
-        if (this.space[temp]) {
-          this.currentDir = temp;
-          return {
-            result: true,
-          };
+        // 上层目录
+        if (newDir === "../") {
+          // 已经是根目录，无法到上层
+          if (this.currentDir === "/") {
+            reject("已经是根目录");
+            return;
+          } else {
+            fullPath = getParentDir(this.currentDir);
+          }
         }
-        return {
-          result: false,
-          message: "目录不存在",
-        };
-      }
-      this.currentDir = fullPath;
-      return {
-        result: true,
-      };
+        // 目录不存在
+        if (!this.space[fullPath] || this.space[fullPath].type !== "dir") {
+          // 尝试将最后的斜杠去掉
+          const temp = fullPath.slice(0, -1);
+          if (this.space[temp]) {
+            this.currentDir = temp;
+            resolve(temp);
+          }
+          reject("目录不存在");
+          return;
+        }
+        this.currentDir = fullPath;
+        resolve(fullPath);
+      });
     },
     /**
      * 路径补全

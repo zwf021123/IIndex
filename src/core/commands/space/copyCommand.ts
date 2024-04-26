@@ -29,7 +29,7 @@ const copyCommand: CommandType = {
       defaultValue: false,
     },
   ],
-  action(options, terminal): void {
+  async action(options, terminal): Promise<void> {
     const { _, recursive = false } = options;
     if (_.length < 2) {
       terminal.writeTextErrorResult("参数不足");
@@ -37,11 +37,12 @@ const copyCommand: CommandType = {
     }
     const spaceStore = useSpaceStore();
     const [source, target] = _;
-    const { result, message } = spaceStore.copyItem(source, target, recursive);
-    if (result) {
+
+    try {
+      await spaceStore.copyItem(source, target, recursive);
       terminal.writeTextSuccessResult("复制成功");
-    } else {
-      terminal.writeTextErrorResult(message ?? "复制失败");
+    } catch (errMsg: any) {
+      terminal.writeTextErrorResult(errMsg);
     }
   },
 };

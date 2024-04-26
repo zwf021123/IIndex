@@ -16,7 +16,7 @@ const mkdirCommand: CommandType = {
     },
   ],
   options: [],
-  action(options, terminal): void {
+  async action(options, terminal): Promise<void> {
     const { _ } = options;
     if (_.length < 1) {
       terminal.writeTextErrorResult("参数不足");
@@ -29,11 +29,11 @@ const mkdirCommand: CommandType = {
       name: newDir,
       type: "dir",
     };
-    const { result, message } = spaceStore.addItem(item);
-    if (result) {
-      terminal.writeTextResult("创建目录成功");
-    } else {
-      terminal.writeTextErrorResult(message ?? "创建目录失败");
+    try {
+      await spaceStore.addItem(item);
+      terminal.writeTextSuccessResult("创建成功");
+    } catch (errMsg: any) {
+      terminal.writeTextErrorResult(errMsg);
     }
   },
 };

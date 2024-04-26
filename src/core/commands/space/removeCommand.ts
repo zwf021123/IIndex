@@ -32,7 +32,7 @@ const removeCommand: CommandType = {
       defaultValue: false,
     },
   ],
-  action(options: ParsedOptions, terminal): void {
+  async action(options: ParsedOptions, terminal): Promise<void> {
     const { _, recursive = false, force } = options;
     if (_.length < 1) {
       terminal.writeTextErrorResult("参数不足");
@@ -44,11 +44,11 @@ const removeCommand: CommandType = {
       return;
     }
     const spaceStore = useSpaceStore();
-    const { result, message } = spaceStore.deleteItem(deleteKey, recursive);
-    if (result) {
-      terminal.writeTextResult("操作成功");
-    } else {
-      terminal.writeTextErrorResult(message ?? "操作失败");
+    try {
+      await spaceStore.deleteItem(deleteKey, recursive);
+      terminal.writeTextSuccessResult("删除成功");
+    } catch (errMsg: any) {
+      terminal.writeTextErrorResult(errMsg);
     }
   },
 };

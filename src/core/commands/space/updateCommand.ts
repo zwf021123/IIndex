@@ -30,7 +30,7 @@ const addCommand: CommandType = {
       type: "string",
     },
   ],
-  action(options, terminal): void {
+  async action(options, terminal): Promise<void> {
     let { _, name, link } = options;
     const dir = _[0];
     const spaceStore = useSpaceStore();
@@ -44,11 +44,11 @@ const addCommand: CommandType = {
       link = "http://" + link;
     }
 
-    const { result, message } = spaceStore.updateItem(dir, name, link);
-    if (result) {
+    try {
+      await spaceStore.updateItem(dir, name, link);
       terminal.writeTextSuccessResult("更新成功");
-    } else {
-      terminal.writeTextErrorResult(message ?? "添加失败");
+    } catch (errMsg: any) {
+      terminal.writeTextErrorResult(errMsg);
     }
   },
 };

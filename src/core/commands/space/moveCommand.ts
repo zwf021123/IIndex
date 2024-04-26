@@ -29,7 +29,7 @@ const moveCommand: CommandType = {
       defaultValue: false,
     },
   ],
-  action(options, terminal): void {
+  async action(options, terminal): Promise<void> {
     const { _, recursive = false } = options;
     if (_.length < 2) {
       terminal.writeTextErrorResult("参数不足");
@@ -37,11 +37,11 @@ const moveCommand: CommandType = {
     }
     const spaceStore = useSpaceStore();
     const [source, target] = _;
-    const { result, message } = spaceStore.moveItem(source, target, recursive);
-    if (result) {
+    try {
+      await spaceStore.moveItem(source, target, recursive);
       terminal.writeTextSuccessResult("移动成功");
-    } else {
-      terminal.writeTextErrorResult(message ?? "移动失败");
+    } catch (errMsg: any) {
+      terminal.writeTextErrorResult(errMsg);
     }
   },
 };
