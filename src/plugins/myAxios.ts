@@ -1,4 +1,5 @@
 import axios from "axios";
+import { message } from "ant-design-vue";
 
 // 自定义 axios 实例
 const myAxios = axios.create({
@@ -6,7 +7,7 @@ const myAxios = axios.create({
     // @ts-ignore
     process.env.NODE_ENV === "production"
       ? "https://express-inmm-104273-5-1323149302.sh.run.tcloudbase.com/api"
-      : "http://localhost:7345/api",
+      : "http://localhost:80/api",
 });
 
 myAxios.defaults.withCredentials = true;
@@ -27,6 +28,7 @@ myAxios.interceptors.request.use(
 myAxios.interceptors.response.use(
   function (response) {
     console.log(response);
+    message.error(response.data.message);
     // 对响应数据做点什么
     return response.data;
   },
