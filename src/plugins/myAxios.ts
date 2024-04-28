@@ -6,8 +6,9 @@ const myAxios = axios.create({
   baseURL:
     // @ts-ignore
     process.env.NODE_ENV === "production"
-      ? "https://express-inmm-104273-5-1323149302.sh.run.tcloudbase.com/api"
-      : "http://localhost:80/api",
+      ? "106.53.22.27/api"
+      : "http://localhost:5000/api",
+  // "106.53.22.27/api",
 });
 
 myAxios.defaults.withCredentials = true;
@@ -33,7 +34,7 @@ myAxios.interceptors.response.use(
   },
   function (error) {
     console.log(error);
-    message.error(error);
+    // message.error("error");
     // 对响应错误做点什么
     return Promise.reject(error);
   }
