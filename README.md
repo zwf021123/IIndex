@@ -1,4 +1,19 @@
 # web-terminal项目
+## 启动项目
+1. 先启动后端（请保证你的电脑中已经拥有Mysql、Redis并且它们的服务已经启动）
+```shell
+/server目录下执行
+npm run start:dev
+```
+
+2. 启动前端（请保证你的电脑已经拥有Nodejs并且已经正确配置）
+
+```shell
+根目录/ 下执行
+npm run dev
+```
+
+
 
 ## 项目介绍
 
