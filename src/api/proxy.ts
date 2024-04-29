@@ -20,3 +20,4 @@ module.exports = (req: any, res: any) => {
     },
   })(req, res);
 };
+export {};
