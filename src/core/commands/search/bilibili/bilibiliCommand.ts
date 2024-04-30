@@ -49,6 +49,9 @@ const bilibiliCommand: CommandType = {
       terminal.writeResult(output);
       return;
     }
+    console.log("self", self);
+    console.log("self", typeof self);
+
     const word = _.length > 0 ? _[0] : "";
     const targetLink = `https://search.bilibili.com/all?keyword=${word}`;
     if (self) {
