@@ -1,12 +1,13 @@
 import { CommandType } from "@/types/command";
-import { translate } from "./fanYiApi";
+import { translate } from "@/api/fanyi";
+import { from, to } from "@/constants/translate";
 
 /**
  * 翻译命令
  * @author zwf021123
  */
-const fanyiCommand: CommandType = {
-  func: "fanyi",
+const translateCommand: CommandType = {
+  func: "translate",
   name: "翻译",
   alias: [],
   params: [
@@ -23,6 +24,7 @@ const fanyiCommand: CommandType = {
       alias: ["f"],
       type: "string",
       defaultValue: "auto",
+      alternative: from,
     },
     {
       key: "to",
@@ -30,6 +32,7 @@ const fanyiCommand: CommandType = {
       alias: ["t"],
       type: "string",
       defaultValue: "auto",
+      alternative: to,
     },
   ],
   async action(options, terminal) {
@@ -53,4 +56,4 @@ const fanyiCommand: CommandType = {
   },
 };
 
-export default fanyiCommand;
+export default translateCommand;

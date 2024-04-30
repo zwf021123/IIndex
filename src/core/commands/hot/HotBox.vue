@@ -1,30 +1,37 @@
 <template>
   <div>
     <div v-for="(song, index) in songList" :key="index">
+      <a-popover placement="right">
+        <template #content>
+          <img :src="song?.al?.picUrl" width="260" :alt="song?.al?.name" />
+        </template>
+        <img
+          :src="song?.al?.picUrl"
+          height="25"
+          :alt="song?.al?.name"
+          class="songCover"
+        />
+      </a-popover>
       <a :href="`https://music.163.com/#/song?id=${song?.id}`" target="_blank">
         {{ song?.al?.name }}
       </a>
-      <img :src="song?.al?.picUrl" height="25" :alt="song?.al?.name" />
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref } from "vue";
-import { listHotMusics } from "./hotApi";
-import { message } from "ant-design-vue";
+import { toRefs } from "vue";
+interface MusicBoxProps {
+  songList: Array<any>;
+}
 
-const songList = ref([] as any[]);
+const props = withDefaults(defineProps<MusicBoxProps>(), {});
 
-onMounted(async () => {
-  const res: any = await listHotMusics();
-  if (res?.code === 0) {
-    const songs = res.data;
-    songList.value = songs.slice(0, 10);
-  } else {
-    message.error("加载失败");
-  }
-});
+const { songList } = toRefs(props);
 </script>
 
-<style scoped></style>
+<style scoped>
+.songCover {
+  cursor: zoom-in;
+}
+</style>

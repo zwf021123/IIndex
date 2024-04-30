@@ -29,7 +29,6 @@ const musicCommand: CommandType = {
     const name = _[0];
     let musicPath = "";
     const res: any = await getSingleMusic(name);
-    console.log(res);
     if (res?.code === 0) {
       const music = res.data;
       musicPath = `//music.163.com/outchain/player?type=2&id=${music.id}&auto=1&height=66`;

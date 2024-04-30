@@ -1,4 +1,4 @@
-import myAxios from "../../../requests/myAxios";
+import myAxios from "@/requests/myAxios";
 
 /**
  * 翻译文本

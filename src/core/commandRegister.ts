@@ -5,7 +5,7 @@ import spaceCommands from "./commands/space";
 import dateCommand from "./commands/dateCommand";
 import userCommands from "./commands/user/userCommands";
 import timingCommand from "./commands/timing/timingCommand";
-import fanyiCommand from "./commands/fanyi/fanyiCommand";
+import translateCommand from "./commands/translate/translateCommand";
 import pingCommand from "./commands/pingCommand";
 import todoCommand from "./commands/todo/todoCommand";
 import musicCommand from "./commands/relax/music/musicCommand";
@@ -40,7 +40,7 @@ const commandList: CommandType[] = [
   dateCommand,
   clearCommand,
   historyCommand,
-  fanyiCommand,
+  translateCommand,
   helpCommand,
   infoCommand,
   pingCommand,

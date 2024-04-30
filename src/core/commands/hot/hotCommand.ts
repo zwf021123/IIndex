@@ -1,5 +1,6 @@
 import { CommandType } from "@/types/command";
 import { defineAsyncComponent } from "vue";
+import { listHotMusics } from "@/api/music";
 import ComponentOutputType = YuTerminal.ComponentOutputType;
 
 /**
@@ -20,12 +21,24 @@ const hotCommand: CommandType = {
   options: [],
   collapsible: true,
   async action(options, terminal) {
-    const output: ComponentOutputType = {
-      type: "component",
-      component: defineAsyncComponent(() => import("./HotBox.vue")),
-      props: {},
-    };
-    terminal.writeResult(output);
+    let songList = [];
+    try {
+      const res: any = await listHotMusics();
+      if (res?.code === 0) {
+        const songs = res.data;
+        songList = songs.slice(0, 10);
+      }
+      const output: ComponentOutputType = {
+        type: "component",
+        component: defineAsyncComponent(() => import("./HotBox.vue")),
+        props: {
+          songList,
+        },
+      };
+      terminal.writeResult(output);
+    } catch (err) {
+      terminal.writeTextErrorResult("获取热榜失败");
+    }
   },
 };
 
