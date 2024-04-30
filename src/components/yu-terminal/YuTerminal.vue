@@ -103,10 +103,11 @@ import {
 } from "vue";
 import { useSpaceStore } from "@/stores";
 import { registerShortcuts } from "./shortcuts";
-import { useTerminalConfigStore } from "../../core/commands/terminal/config/terminalConfigStore";
+import { useTerminalConfigStore } from "@/stores";
+import { likeSearch } from "@/utils/likeSearch";
 import useHint from "./hint";
 import useHistory from "./history";
-import { LOCAL_USER } from "../../core/commands/user/userConstant";
+import { LOCAL_USER } from "@/constants/user";
 import ContentOutput from "./ContentOutput.vue";
 import CommandOutputType = YuTerminal.CommandOutputType;
 import OutputType = YuTerminal.OutputType;
@@ -114,6 +115,7 @@ import CommandInputType = YuTerminal.CommandInputType;
 import TerminalType = YuTerminal.TerminalType;
 import TextOutputType = YuTerminal.TextOutputType;
 import OutputStatusType = YuTerminal.OutputStatusType;
+import { CommandOptionType } from "@/types/command";
 import { UserType } from "@/types/user";
 import { first, second } from "@/constants/terminal";
 
@@ -228,7 +230,7 @@ const {
   listCommandHistory,
 } = useHistory(commandList.value, inputCommand);
 
-const { hint, setHint, debounceSetHint } = useHint();
+const { hint, command, setHint, debounceSetHint } = useHint();
 
 /**
  * 核心
@@ -393,27 +395,57 @@ const setTabCompletion = () => {
     const wordNum = wordArr.length;
     const currentHintWord = hintArr[wordNum - 1];
     const currentWord = wordArr[wordNum - 1];
-    // 判断当前输入的位置信息为路径还是命令（判断当前的hint值是否包含“目录”或“路径”）
-    // 如果是路径则需要进行路径补全(补全功能集成在getFullPath方法中x
-    // 还是得新建一个方法进行补全，不然使用getFullPath补全会一直补全为绝对路径
-    // )
-    // 如果是命令则需要进行命令补全
+    const isOption = wordNum > 1 && wordArr[wordNum - 2].startsWith("-");
+
+    /**
+     * 判断当前输入的位置信息为路径还是命令（判断当前的hint值是否包含“目录”或“路径”）
+     * 还是得新建一个方法进行补全，不然使用getFullPath补全会一直补全为绝对路径)
+     */
+    //  如果是命令则需要进行命令补全
     if (
       currentHintWord.indexOf("目录") !== -1 ||
       currentHintWord.indexOf("路径") !== -1
     ) {
       // 路径补全
-      inputCommand.value.text = [
-        ...wordArr.slice(0, wordNum - 1),
-        spaceStore.autoCompletePath(currentWord),
-      ].join(" ");
+      inputCommand.value.text =
+        [
+          ...wordArr.slice(0, wordNum - 1),
+          spaceStore.autoCompletePath(currentWord),
+        ].join(" ") + " ";
+    } else if (isOption) {
+      const toMatch = wordArr[wordNum - 2][1];
+      /**
+       * 如果这里能够拿到当前准备执行的命令实例，同时利用wordArr[wordNum - 2]判断是否是一个option
+       * 如果是则可以通过实例拿到所有当前option的可选项，然后进行option的补全
+       */
+      // 获取当前选项的所有可选值
+      let options = null;
+      for (let i = 0; i < command.value.options.length; i++) {
+        if (
+          command.value.options[i].key === toMatch ||
+          command.value.options[i].alias?.some(
+            (alias: string) => alias === toMatch
+          )
+        ) {
+          options = command.value.options[i].alternative;
+          break;
+        }
+      }
+      if (!options) {
+        // 如果没有找到对应的选项，直接返回
+        return;
+      }
+      // 模糊匹配
+      const matchOption = likeSearch(currentWord, options);
+      // 补全
+      inputCommand.value.text =
+        [...wordArr.slice(0, wordNum - 1), matchOption].join(" ") + " ";
     } else {
       // 命令补全
       // 将当前输入个数的单词替换为提示的单词(除了用户输入之前的)
-      inputCommand.value.text = [
-        ...wordArr.slice(0, wordNum - 1),
-        hintArr[wordNum - 1],
-      ].join(" ");
+      inputCommand.value.text =
+        [...wordArr.slice(0, wordNum - 1), hintArr[wordNum - 1]].join(" ") +
+        " ";
     }
   }
 };

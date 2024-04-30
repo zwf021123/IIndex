@@ -1,10 +1,10 @@
 import { CommandType } from "@/types/command";
 import registerCommand from "./subCommands/registerCommand";
 import loginCommand from "./subCommands/loginCommand";
+import logoutCommand from "./subCommands/logoutCommand";
 import { getLoginUser } from "@/api/user";
 import { useUserStore } from "@/stores";
-import { LOCAL_USER } from "./userConstant";
-import logoutCommand from "./subCommands/logoutCommand";
+import { LOCAL_USER } from "@/constants/user";
 
 /**
  * 用户命令

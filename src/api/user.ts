@@ -1,4 +1,4 @@
-import myAxios from "@/plugins/myAxios";
+import myAxios from "@/requests/myAxios";
 
 /**
  * 用户登录

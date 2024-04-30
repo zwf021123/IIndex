@@ -1,11 +1,11 @@
 import { CommandType } from "@/types/command";
-import { useTerminalConfigStore } from "./terminalConfigStore";
+import { useTerminalConfigStore } from "@/stores";
 
 /**
  * 自定义终端欢迎语
  * @author zwf021123
  */
-const welcomeCommand: CommandType = {
+export const welcomeCommand: CommandType = {
   func: "welcome",
   name: "自定义终端欢迎语",
   alias: [],
@@ -24,5 +24,3 @@ const welcomeCommand: CommandType = {
     setWelcomeTexts(welcomeTexts);
   },
 };
-
-export default welcomeCommand;

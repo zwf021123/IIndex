@@ -1,6 +1,7 @@
 <template>
   <div>
     <iframe
+      class="main"
       frameborder="no"
       marginwidth="0"
       marginheight="0"
@@ -24,4 +25,11 @@ const videoPath = computed(() => {
 });
 </script>
 
-<style scoped></style>
+<style scoped>
+.main {
+  width: 100%;
+  height: 80vh;
+  min-height: 600px;
+  overflow: hidden;
+}
+</style>

@@ -2,7 +2,7 @@ import { ref } from "vue";
 import { getUsageStr } from "../../core/commands/terminal/help/helpUtils";
 import { commandList, commandMap } from "../../core/commandRegister";
 import _, { trim } from "lodash";
-import { useTerminalConfigStore } from "../../core/commands/terminal/config/terminalConfigStore";
+import { useTerminalConfigStore } from "@/stores";
 
 /**
  * 命令提示功能
@@ -10,6 +10,8 @@ import { useTerminalConfigStore } from "../../core/commands/terminal/config/term
  */
 const useHint = () => {
   const hint = ref("");
+  // 记录匹配到的命令（便于后续提示操作）
+  const command = ref();
   const { showHint } = useTerminalConfigStore();
 
   const setHint = (inputText: string) => {
@@ -24,22 +26,27 @@ const useHint = () => {
     const args = trim(inputText).split(/\s+/);
 
     const likeKey = likeSearch(args[0]);
-    let command = commandMap[likeKey];
-    if (!command) {
+    command.value = commandMap[likeKey];
+    if (!command.value) {
       hint.value = "";
       return;
     }
     // 子命令提示
     if (
-      command.subCommands &&
-      Object.keys(command.subCommands).length > 0 &&
+      command.value.subCommands &&
+      Object.keys(command.value.subCommands).length > 0 &&
       args.length > 1
     ) {
-      // 模糊查询子命令func
-      const likeKey = likeSearch(args[1], command.subCommands);
-      hint.value = getUsageStr(command.subCommands[likeKey], command);
+      // 模糊查询子命令func(这里只能满足存在父子命令的情况)
+      const likeKey = likeSearch(args[1], command.value.subCommands);
+      hint.value = getUsageStr(
+        command.value.subCommands[likeKey],
+        command.value
+      );
+      // 获取提示后再更新command
+      command.value = commandMap[likeKey];
     } else {
-      hint.value = getUsageStr(command);
+      hint.value = getUsageStr(command.value);
     }
   };
 
@@ -52,6 +59,7 @@ const useHint = () => {
 
   return {
     hint,
+    command,
     setHint,
     debounceSetHint,
   };

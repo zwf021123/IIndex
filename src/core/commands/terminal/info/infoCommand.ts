@@ -6,7 +6,7 @@ import ComponentOutputType = YuTerminal.ComponentOutputType;
  * 查看网站本身信息命令
  * @author zwf021123
  */
-const infoCommand: CommandType = {
+export const infoCommand: CommandType = {
   func: "info",
   name: "查看本站信息",
   alias: ["author", "about"],
@@ -19,5 +19,3 @@ const infoCommand: CommandType = {
     terminal.writeResult(output);
   },
 };
-
-export default infoCommand;

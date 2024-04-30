@@ -10,6 +10,7 @@ const myAxios = axios.create({
       : "http://localhost:5000/api",
 });
 
+// 配置请求携带cookie
 myAxios.defaults.withCredentials = true;
 
 // 添加请求拦截器

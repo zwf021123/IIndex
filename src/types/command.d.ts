@@ -49,4 +49,5 @@ interface CommandOptionType {
   type: "string" | "boolean";
   defaultValue?: string | boolean; // 默认值，标识作用
   required?: boolean; // 是否必填
+  alternative?: Object; // 可选值
 }

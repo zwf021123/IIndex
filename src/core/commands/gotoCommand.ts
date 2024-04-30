@@ -32,7 +32,7 @@ export default {
       return;
     }
     let link = _[0];
-    // 优先找空间条目链接
+    // 优先找空间条目链接(即允许直接输入空间条目的name进行跳转)
     let { getItem } = useSpaceStore();
     const item = getItem(link);
     if (item?.link) {

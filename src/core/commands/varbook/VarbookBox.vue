@@ -24,9 +24,9 @@
 
 <script setup lang="ts">
 import { reactive, ref, toRefs } from "vue";
-import { getNamedVariables } from "./hooks/api/rest/translate";
-import { parseNamedVariable } from "./hooks/character/standard";
-import ContentOutput from "../../../components/yu-terminal/ContentOutput.vue";
+import { getNamedVariables } from "@/api/translate";
+import { parseNamedVariable } from "./standard";
+import ContentOutput from "@/components/yu-terminal/ContentOutput.vue";
 import OutputType = YuTerminal.OutputType;
 
 interface VariableBoxProps {
@@ -80,3 +80,4 @@ getNamedVariables(searchText.value)
   box-shadow: 2px 3px 3px 1px #8b8b8b59;
 }
 </style>
+./hooks/api/translate ../../../api/translate ./standard/standard

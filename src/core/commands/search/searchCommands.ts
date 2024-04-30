@@ -61,6 +61,7 @@ const searchCommand: CommandType = {
       alias: ["f"],
       type: "string",
       defaultValue: "baidu",
+      alternative: fromDict,
     },
     {
       key: "self",

@@ -1,7 +1,7 @@
 import { CommandType } from "@/types/command";
 import { defineAsyncComponent } from "vue";
 import ComponentOutputType = YuTerminal.ComponentOutputType;
-import { checkSearchText } from "./hooks/character/standard";
+import { checkSearchText } from "./standard";
 
 /**
  * 变量命名命令

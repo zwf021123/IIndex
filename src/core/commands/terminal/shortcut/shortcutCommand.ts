@@ -6,7 +6,7 @@ import ComponentOutputType = YuTerminal.ComponentOutputType;
  * 快捷键命令
  * @author zwf021123
  */
-const shortcutCommand: CommandType = {
+export const shortcutCommand: CommandType = {
   func: "shortcut",
   name: "快捷键",
   desc: "查看快捷键",
@@ -22,5 +22,3 @@ const shortcutCommand: CommandType = {
     terminal.writeResult(output);
   },
 };
-
-export default shortcutCommand;

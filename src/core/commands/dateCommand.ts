@@ -1,5 +1,5 @@
 import { CommandType } from "@/types/command";
-import myDayjs from "../../plugins/myDayjs";
+import myDayjs from "@/plugins/myDayjs";
 
 /**
  * 日期命令
