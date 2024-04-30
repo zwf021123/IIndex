@@ -6,7 +6,7 @@
   "scripts": {
     "start:dev": "cross-env NODE_ENV=local node src/index.js ",
     "start": "cross-env NODE_ENV=prod node src/index.js",
-    "build": "npm config set registry https://mirrors.cloud.tencent.com/npm/ && npm run src/index.js",
+    "build": "cross-env NODE_ENV=prod node src/index.js",
     "test": "npm test"
   },
   "author": "zwf021123",
