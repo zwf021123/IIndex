@@ -1,5 +1,6 @@
 import { CommandType } from "@/types/command";
 import { defineAsyncComponent } from "vue";
+import { getSingleMusic } from "@/api/music";
 import ComponentOutputType = YuTerminal.ComponentOutputType;
 
 /**
@@ -19,21 +20,30 @@ const musicCommand: CommandType = {
   ],
   options: [],
   collapsible: true,
-  action(options, terminal) {
+  async action(options, terminal) {
     const { _ } = options;
     if (_.length < 1) {
       terminal.writeTextErrorResult("参数不足");
       return;
     }
     const name = _[0];
-    const output: ComponentOutputType = {
-      type: "component",
-      component: defineAsyncComponent(() => import("./MusicBox.vue")),
-      props: {
-        name,
-      },
-    };
-    terminal.writeResult(output);
+    let musicPath = "";
+    const res: any = await getSingleMusic(name);
+    console.log(res);
+    if (res?.code === 0) {
+      const music = res.data;
+      musicPath = `//music.163.com/outchain/player?type=2&id=${music.id}&auto=1&height=66`;
+      const output: ComponentOutputType = {
+        type: "component",
+        component: defineAsyncComponent(() => import("./MusicBox.vue")),
+        props: {
+          musicPath,
+        },
+      };
+      terminal.writeResult(output);
+    } else {
+      terminal.writeTextErrorResult("未找到音乐");
+    }
   },
 };
 
