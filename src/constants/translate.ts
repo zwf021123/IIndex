@@ -1,1 +1,42 @@
 export const ROOT_URL = "https://api-varbook.uiuing.com";
+
+export const from = {
+  auto: "自动检测",
+  zh: "中文",
+  en: "英文",
+  jp: "日文",
+  kor: "韩文",
+  fra: "法文",
+  spa: "西班牙文",
+  th: "泰文",
+  ara: "阿拉伯文",
+  ru: "俄文",
+  pt: "葡萄牙文",
+  de: "德文",
+  it: "意大利文",
+  el: "希腊文",
+  nl: "荷兰文",
+  pl: "波兰文",
+  bul: "保加利亚文",
+  est: "爱沙尼亚文",
+};
+
+export const to = {
+  zh: "中文",
+  en: "英文",
+  jp: "日文",
+  kor: "韩文",
+  fra: "法文",
+  spa: "西班牙文",
+  th: "泰文",
+  ara: "阿拉伯文",
+  ru: "俄文",
+  pt: "葡萄牙文",
+  de: "德文",
+  it: "意大利文",
+  el: "希腊文",
+  nl: "荷兰文",
+  pl: "波兰文",
+  bul: "保加利亚文",
+  est: "爱沙尼亚文",
+};

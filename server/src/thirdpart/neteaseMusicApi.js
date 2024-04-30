@@ -1,4 +1,8 @@
-const { cloudsearch, playlist_detail } = require("NeteaseCloudMusicApi");
+const {
+  cloudsearch,
+  playlist_detail,
+  playlist_hot,
+} = require("NeteaseCloudMusicApi");
 
 /**
  * 搜索音乐
