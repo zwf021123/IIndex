@@ -8,9 +8,7 @@
   <div></div>
   <div>
     作者：
-    <a href="https://docs.qq.com/doc/DUFFRVWladXVjeUxW" target="_blank">
-      程序员鱼皮
-    </a>
+    <a href="https://github.com/zwf021123" target="_blank"> zwf021123 </a>
   </div>
 </template>
 

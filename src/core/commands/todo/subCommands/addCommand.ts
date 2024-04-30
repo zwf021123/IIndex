@@ -1,5 +1,5 @@
 import { CommandType } from "@/types/command";
-import { useTodoStore } from "../todoStore";
+import { useTodoStore } from "@/stores";
 import TaskType = Todo.TaskType;
 
 /**

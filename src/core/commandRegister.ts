@@ -3,26 +3,27 @@ import searchCommands from "./commands/search/searchCommands";
 import gotoCommand from "./commands/gotoCommand";
 import spaceCommands from "./commands/space";
 import dateCommand from "./commands/dateCommand";
-import clearCommand from "./commands/terminal/clearCommand";
-import historyCommand from "./commands/terminal/historyCommand";
 import userCommands from "./commands/user/userCommands";
 import timingCommand from "./commands/timing/timingCommand";
-import backgroundCommand from "./commands/terminal/config/backgroundCommand";
-import resetCommand from "./commands/terminal/config/resetCommand";
 import fanyiCommand from "./commands/fanyi/fanyiCommand";
-import helpCommand from "./commands/terminal/help/helpCommand";
-import infoCommand from "./commands/terminal/info/infoCommand";
 import pingCommand from "./commands/pingCommand";
-import hintCommand from "./commands/terminal/config/hintCommand";
 import todoCommand from "./commands/todo/todoCommand";
 import musicCommand from "./commands/relax/music/musicCommand";
 import ddosCommand from "./commands/ddos/ddosCommand";
 import moyuCommand from "./commands/relax/moyu/moyuCommand";
-import shortcutCommand from "./commands/terminal/shortcut/shortcutCommand";
-import welcomeCommand from "./commands/terminal/config/welcomeCommand";
 import hotCommand from "./commands/hot/hotCommand";
 import varbookCommand from "./commands/varbook/varbookCommand";
-
+import {
+  hintCommand,
+  shortcutCommand,
+  welcomeCommand,
+  infoCommand,
+  helpCommand,
+  resetCommand,
+  backgroundCommand,
+  historyCommand,
+  clearCommand,
+} from "./commands/terminal";
 /**
  * 命令列表（数组元素顺序会影响 help 命令的展示顺序，命令命名会影响提示）
  */

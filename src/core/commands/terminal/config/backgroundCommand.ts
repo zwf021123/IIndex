@@ -1,12 +1,12 @@
 import { CommandType } from "@/types/command";
-import { useTerminalConfigStore } from "./terminalConfigStore";
-import myAxios from "@/plugins/myAxios";
+import { useTerminalConfigStore } from "@/stores";
+import myAxios from "@/requests/myAxios";
 
 /**
  * 切换终端背景
  * @author zwf021123
  */
-const backgroundCommand: CommandType = {
+export const backgroundCommand: CommandType = {
   func: "background",
   name: "切换终端背景",
   alias: ["bg"],
@@ -23,6 +23,12 @@ const backgroundCommand: CommandType = {
       desc: "壁纸分类(可选meizi/dongman/fengjing/suiji)",
       alias: ["c"],
       type: "string",
+      alternative: {
+        meizi: "妹子",
+        dongman: "动漫",
+        fengjing: "风景",
+        suiji: "随机",
+      },
     },
   ],
   action(options, terminal) {
@@ -48,5 +54,3 @@ const backgroundCommand: CommandType = {
     setBackground(url);
   },
 };
-
-export default backgroundCommand;

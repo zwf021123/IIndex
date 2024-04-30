@@ -1,11 +1,11 @@
 import { CommandType } from "@/types/command";
-import { useTerminalConfigStore } from "./terminalConfigStore";
+import { useTerminalConfigStore } from "@/stores";
 
 /**
  * 提示命令
  * @author zwf021123
  */
-const hintCommand: CommandType = {
+export const hintCommand: CommandType = {
   func: "hint",
   name: "开关提示",
   desc: "开启 / 关闭输入提示",
@@ -32,5 +32,3 @@ const hintCommand: CommandType = {
     );
   },
 };
-
-export default hintCommand;

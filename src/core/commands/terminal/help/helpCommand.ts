@@ -7,7 +7,7 @@ import ComponentOutputType = YuTerminal.ComponentOutputType;
  * 帮助命令
  * @author zwf021123
  */
-const helpCommand: CommandType = {
+export const helpCommand: CommandType = {
   func: "help",
   name: "查看帮助",
   alias: ["man"],
@@ -57,5 +57,3 @@ const helpCommand: CommandType = {
     terminal.writeResult(output);
   },
 };
-
-export default helpCommand;

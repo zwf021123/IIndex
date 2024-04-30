@@ -10,6 +10,7 @@ import { chromeExtension } from "./build/chromeExtension";
 
 // https://vitejs.dev/config/
 export default defineConfig({
+  base: "./",
   plugins: [
     vue(),
     // 按需加载 ant-design-vue
@@ -25,5 +26,14 @@ export default defineConfig({
         replacement: resolve(__dirname, "./src"),
       },
     ],
+  },
+  server: {
+    proxy: {
+      "/req": {
+        target: "106.53.22.27",
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/req/, ""),
+      },
+    },
   },
 });

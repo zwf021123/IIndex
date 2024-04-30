@@ -1,7 +1,7 @@
 import { CommandType } from "@/types/command";
 import { userLogin, userLogout, userRegister } from "@/api/user";
 import { useUserStore } from "@/stores";
-import { LOCAL_USER } from "../userConstant";
+import { LOCAL_USER } from "@/constants/user";
 
 /**
  * 用户注销命令

@@ -4,7 +4,7 @@ import { CommandType } from "@/types/command";
  * 清屏命令
  * @author zwf021123
  */
-const clearCommand: CommandType = {
+export const clearCommand: CommandType = {
   func: "clear",
   name: "清屏",
   alias: ["cl"],
@@ -16,5 +16,3 @@ const clearCommand: CommandType = {
     }, 100);
   },
 };
-
-export default clearCommand;

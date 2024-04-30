@@ -33,16 +33,19 @@ const pingCommand: CommandType = {
       return;
     }
     var dest = _[0];
+    // 如果地址不是以http://或https://开头，则默认添加https://
     if (
       !dest.toLowerCase().startsWith("http://") &&
       !dest.toLowerCase().startsWith("https://")
     ) {
       dest = "https://" + dest;
     }
+    // 如果地址是http://开头，则替换为https://
     if (dest.toLowerCase().startsWith("http://")) {
       dest = dest.replace("http://", "https://");
     }
     const startTime = new Date().getTime();
+    // 利用Promise.race实现计时器与fetch请求的竞争，进而实现ping功能
     const res = await Promise.race([
       new Promise(function (resolve, reject) {
         setTimeout(() => reject(new Error("timeout")), Number(timeout));
