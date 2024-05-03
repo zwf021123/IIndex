@@ -11,7 +11,6 @@
   },
   "author": "zwf021123",
   "dependencies": {
-    "@vercel/node": "^3.0.27",
     "axios": "^0.27.2",
     "body-parser": "^1.19.0",
     "connect-redis": "^6.0.0",

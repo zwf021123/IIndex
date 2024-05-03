@@ -27,13 +27,13 @@ export default defineConfig({
       },
     ],
   },
-  server: {
-    proxy: {
-      "/req": {
-        target: "106.53.22.27",
-        changeOrigin: true,
-        rewrite: (path) => path.replace(/^\/req/, ""),
-      },
-    },
-  },
+  // server: {
+  //   proxy: {
+  //     "/api": {
+  //       target: "106.53.22.27",
+  //       changeOrigin: true,
+  //       // rewrite: (path) => path.replace(/^\/req/, ""),
+  //     },
+  //   },
+  // },
 });

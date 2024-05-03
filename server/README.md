@@ -17,8 +17,7 @@
 
 依赖服务：
 
-- 百度翻译 API
-- 新浪壁纸 API
+- 博天 API
 
 ### 为什么选 Node.js 做后端？
 
@@ -34,9 +33,11 @@
 - 跨域
 - 用户登录及 session 分布式存储
 
-## 快速开发
+## 快速启动
 
 1）先修改 `src/config` 目录下的配置，可以新建 `config.prod.js` 用于线上环境。
+
+> 你需要保证你的本地已经拥有 mysql，redis 并且创建对应的数据库以及表
 
 比如：
 
@@ -73,50 +74,7 @@ npm run start
 
 ## 部署发布
 
-支持前台进程运行或容器方式部署
-
-### 容器部署
-
-以微信云托管为例，也可以使用其他容器平台或原生 Docker 部署。
-
-#### 1. 编写 Dockerfile
-
-```dockerfile
-# 使用官方 Node.js 轻量级镜像
-# https://hub.docker.com/_/node
-FROM node:16-slim
-
-# 定义工作目录
-WORKDIR /usr/src/app
-
-# 将本地代码复制到工作目录内
-COPY ./ ./
-
-RUN npm install
-
-# 安装 pm2
-RUN npm install pm2 -g
-
-# 启动服务
-CMD pm2-runtime 'npm start'
-
-```
-
-#### 2. 上传代码包
-
-将目录下所有文件压缩为 zip：
-
-![](https://main.qcloudimg.com/raw/2f7b3d10472cb95f7a87691a679e1ef6.png)
-
-进入微信云托管，创建环境和服务，然后发布一个版本。
-
-- 上传方式为本地代码
-- 附件类型为 ZIP 压缩包（即上一步中产生的压缩包）
-- 监听端口为 7345
-
-![](https://main.qcloudimg.com/raw/42ff035c940850d5e4b7915a0a17f40c.png)
-
-随后点击确定，即可创建一个版本，后续发布流程可以参考微信云托管文档。
+使用腾讯云宝塔工具进行部署上线
 
 ## 目录结构
 
