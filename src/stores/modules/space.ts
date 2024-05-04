@@ -1,11 +1,11 @@
 import { defineStore } from "pinia";
 import { SpaceItemType, SpaceType, ResultType } from "@/types/space";
 import { pathReg } from "@/constants/regExp";
-import { get, reject } from "lodash";
 
 /**
  * 空间状态（类似文件系统实现）
  */
+
 export const useSpaceStore = defineStore("space", {
   state: () => ({
     // 扁平化存储空间
@@ -73,14 +73,17 @@ export const useSpaceStore = defineStore("space", {
      */
     addItem(item: SpaceItemType): Promise<string> {
       return new Promise((resolve, reject) => {
-        const fullPath = getFullPath(item.dir, item.name);
+        const tempDir = item.dir + (item.dir.slice(-1) === "/" ? "" : "/");
+        const fullPath = getFullPath(this.currentDir, tempDir + item.name);
+        // 因为 addItem 时，dir 可能是相对路径，所以需要重新赋值
+        item.dir = getParentDir(fullPath);
         // 非法路径
         if (!pathReg.test(fullPath)) {
-          reject("路径不合法");
+          reject(`非法路径：${fullPath}`);
           return;
         }
         // 目录不存在
-        if (!this.space[item.dir]) {
+        if (!this.space[getParentDir(fullPath)]) {
           reject("父目录不存在");
           return;
         }
@@ -102,7 +105,7 @@ export const useSpaceStore = defineStore("space", {
         const fullPath = getFullPath(this.currentDir, key);
         // 非法路径
         if (!pathReg.test(fullPath)) {
-          reject("路径不合法");
+          reject(`非法路径：${fullPath}`);
           return;
         }
         // 目录不存在
@@ -114,6 +117,11 @@ export const useSpaceStore = defineStore("space", {
         // 需要递归删除
         if (recursive) {
           for (const spaceKey in this.space) {
+            console.log("spaceKey", spaceKey);
+            // 跳过根目录
+            if (spaceKey === "/") {
+              continue;
+            }
             if (spaceKey.startsWith(fullPath)) {
               deleteKeyList.push(spaceKey);
             }
@@ -123,32 +131,33 @@ export const useSpaceStore = defineStore("space", {
         deleteKeyList.forEach((deleteKey) => {
           delete this.space[deleteKey];
         });
-        resolve(fullPath);
+        resolve(JSON.stringify(this.space));
       });
     },
     /**
-     * 递归复制目录
+     * 递归复制目录 copy ./newtest /xxx -r
      */
     copyDirectory(sourcePath: string, targetPath: string): Promise<void> {
       return new Promise((resolve, reject) => {
         const items = this.listItems(sourcePath, true);
         // console.log("items", items);
-        const itemName = getItemName(sourcePath);
-        const newDirPath = targetPath + itemName;
-        if (!this.space[newDirPath]) {
-          try {
-            this.addItem({
-              dir: targetPath,
-              name: itemName,
-              type: "dir",
-            });
-          } catch (err) {
-            reject(err);
-          }
-        }
+        // const itemName = getItemName(sourcePath);
+        // const newDirPath = targetPath + itemName;
+        // if (!this.space[newDirPath]) {
+        //   try {
+        //     this.addItem({
+        //       dir: targetPath,
+        //       name: itemName,
+        //       type: "dir",
+        //     });
+        //   } catch (err) {
+        //     reject(err);
+        //   }
+        // }
         for (const item of items) {
           // 计算在目标目录中的路径
-          const targetItemPath = targetPath + itemName + "/" + item.name;
+          const targetItemPath = targetPath + "/" + item.name;
+          // const targetItemPath = targetPath + itemName + "/" + item.name;
           // console.log("targetItemPath", targetItemPath);
 
           // 如果这一项是一个目录，则递归调用 copyDirectory
@@ -158,7 +167,7 @@ export const useSpaceStore = defineStore("space", {
             // 否则，直接复制这一项
             this.space[targetItemPath] = {
               ...item,
-              dir: targetPath + itemName,
+              dir: targetPath,
             };
           }
         }
@@ -195,7 +204,7 @@ export const useSpaceStore = defineStore("space", {
         const fullPath = getFullPath(this.currentDir, dir);
         // 非法路径
         if (!pathReg.test(fullPath)) {
-          reject("路径不合法");
+          reject(`非法路径：${fullPath}`);
           return;
         }
         // 目录不存在
@@ -224,8 +233,8 @@ export const useSpaceStore = defineStore("space", {
             name,
             link,
           };
-          const p1 = this.addItem(newItem);
           const p2 = this.deleteItem(fullPath, false);
+          const p1 = this.addItem(newItem);
           Promise.all([p1, p2])
             .then(() => {
               resolve(fullPath);
@@ -254,8 +263,12 @@ export const useSpaceStore = defineStore("space", {
         const sourceFullPath = getFullPath(this.currentDir, source);
         const targetFullPath = getFullPath(this.currentDir, target);
         // 非法路径
-        if (!pathReg.test(sourceFullPath) || !pathReg.test(targetFullPath)) {
-          reject("路径不合法");
+        if (!pathReg.test(sourceFullPath)) {
+          reject(`非法路径：${sourceFullPath}`);
+          return;
+        }
+        if (!pathReg.test(targetFullPath)) {
+          reject(`非法路径：${targetFullPath}`);
           return;
         }
         // 源条目不存在
@@ -289,6 +302,7 @@ export const useSpaceStore = defineStore("space", {
             .catch((errMsg) => {
               reject(errMsg);
             });
+          return;
         }
 
         const targetItem = { ...sourceItem };
@@ -337,7 +351,7 @@ export const useSpaceStore = defineStore("space", {
 
         // 非法路径
         if (!pathReg.test(fullPath)) {
-          reject("路径不合法");
+          reject(`非法路径：${fullPath}`);
           return;
         }
         // 上层目录
@@ -409,9 +423,10 @@ export const useSpaceStore = defineStore("space", {
 
 /**
  * 获得条目绝对路径
- * @param dir 目录
- * @param name 条目名称（位置）
- */
+ * @param dir 当前目录
+ * @param name 条目路径
+ */ ("../love");
+// ./love baidu
 const getFullPath = (dir: string, name: string): string => {
   // 需要对name的前缀进行处理例如./ / ../
   // e.g. ./a/b => /a/b   ../../../a/b => /a/b

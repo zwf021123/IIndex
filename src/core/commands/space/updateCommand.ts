@@ -39,11 +39,17 @@ const addCommand: CommandType = {
       terminal.writeTextErrorResult("请至少输入名称或链接");
       return;
     }
+    // 获取原有的name和link，避免只更新一个字段时，另一个字段被清空
+    if (!name) {
+      name = spaceStore.getItem(dir)?.name;
+    }
+    if (!link) {
+      link = spaceStore.getItem(dir)?.link;
+    }
     // 默认处理链接前缀为http
-    if (!link.startsWith("http://") && !link.startsWith("https://")) {
+    if (link && !link.startsWith("http://") && !link.startsWith("https://")) {
       link = "http://" + link;
     }
-
     try {
       await spaceStore.updateItem(dir, name, link);
       terminal.writeTextSuccessResult("更新成功");

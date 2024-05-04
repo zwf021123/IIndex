@@ -1,0 +1,38 @@
+{
+  "space": {
+    "/": {
+      "name": "/",
+      "dir": "/",
+      "type": "dir"
+    },
+    "/baidu": {
+      "dir": "/",
+      "link": "http://bud.com",
+      "name": "baidu",
+      "type": "link"
+    },
+    "/newtest": {
+      "dir": "/",
+      "name": "newtest",
+      "type": "dir"
+    },
+    "/newtest/sougou": {
+      "dir": "/newtest",
+      "link": "http://dklaj",
+      "name": "sougou",
+      "type": "link"
+    },
+    "/newtest/baidu": {
+      "dir": "/newtest",
+      "link": "http://bud.com",
+      "name": "baidu",
+      "type": "link"
+    },
+    "/xxx": {
+      "dir": "/",
+      "name": "xxx",
+      "type": "dir"
+    }
+  },
+  "currentDir": "/xxx"
+}
