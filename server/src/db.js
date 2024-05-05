@@ -1,5 +1,6 @@
 const { Sequelize } = require("sequelize");
 const { dbConfig } = require("./config/getConfig");
+const { UserModel, SpaceModel } = require("./model");
 
 /**
  * 创建数据库实例

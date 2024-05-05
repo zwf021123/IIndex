@@ -2,6 +2,8 @@ import { createApp } from "vue";
 import App from "./App.vue";
 import router from "./routes";
 import pinia from "@/stores";
+import "@/style/common.css";
+import "ant-design-vue/es/message/style/css";
 
 const app = createApp(App);
 

@@ -120,12 +120,14 @@ class ExpressServer {
             message: e.message,
             data: null,
           };
+          res.status(String(e.code).substring(0, 3));
         } else {
           result = {
             code: 500,
             data: null,
             message: "server error",
           };
+          res.status("500");
         }
         console.error(
           `req error path = ${req.path

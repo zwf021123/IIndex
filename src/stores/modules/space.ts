@@ -1,5 +1,10 @@
 import { defineStore } from "pinia";
-import { SpaceItemType, SpaceType, ResultType } from "@/types/space";
+import {
+  SpaceItemType,
+  SpaceType,
+  ResultType,
+  SpaceStateType,
+} from "@/types/space";
 import { pathReg } from "@/constants/regExp";
 
 /**
@@ -22,6 +27,12 @@ export const useSpaceStore = defineStore("space", {
   }),
   getters: {},
   actions: {
+    /**
+     * 设置空间
+     */
+    setSpace(space: SpaceStateType) {
+      this.$patch(space);
+    },
     /**
      * 获取单条目
      * @param key

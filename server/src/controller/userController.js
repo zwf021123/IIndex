@@ -45,7 +45,7 @@ async function userLoginApi(event, req, res) {
  */
 function userLogoutApi(event, req, res) {
   if (!req.session.userInfo) {
-    throw new MyError(NO_AUTH_ERROR_CODE, "未登录");
+    throw new MyError(NO_AUTH_ERROR_CODE, "未登录或登录已过期");
   }
   // 删除session的用户信息即可
   delete req.session.userInfo;

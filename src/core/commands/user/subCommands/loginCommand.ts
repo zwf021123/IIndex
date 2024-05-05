@@ -1,6 +1,8 @@
 import { CommandType } from "@/types/command";
-import { userLogin, userRegister } from "@/api/user";
-import { useUserStore } from "@/stores";
+import { userLogin } from "@/api/user";
+import { getCurrentSpace } from "@/api/space";
+import { useUserStore, useSpaceStore } from "@/stores";
+import { set } from "lodash";
 
 /**
  * 用户登录命令
@@ -35,14 +37,26 @@ const loginCommand: CommandType = {
       terminal.writeTextErrorResult("请输入密码");
       return;
     }
-    const res: any = await userLogin(username, password);
     const { setLoginUser } = useUserStore();
-    if (res?.code === 0) {
-      setLoginUser(res.data);
-      terminal.writeTextSuccessResult("登录成功");
-    } else {
-      terminal.writeTextErrorResult(res?.message ?? "登录失败");
-    }
+    const { setSpace } = useSpaceStore();
+    // const res: any = await userLogin(username, password);
+    // console.log(await getCurrentSpace());
+    try {
+      const loginRes: any = await userLogin(username, password);
+      const spaceRes: any = await getCurrentSpace();
+      if (loginRes?.code === 0 && spaceRes?.code === 0) {
+        setLoginUser(loginRes.data);
+        setSpace(spaceRes.data);
+        terminal.writeTextSuccessResult("登录成功");
+      } else {
+        // terminal.writeTextErrorResult(res?.message ?? "登录失败");
+        terminal.writeTextErrorResult("登录失败");
+      }
+    } catch (e) {}
+    // const res: any = await Promise.all([
+    //   userLogin(username, password),
+    //   getCurrentSpace(),
+    // ]);
   },
 };
 

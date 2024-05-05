@@ -36,6 +36,10 @@ const routes = [
     handler: require("./controller/backgroundController")
       .getRandomBackgroundApi,
   },
+  {
+    path: "/space/current",
+    handler: require("./controller/spaceController").getSpaceApi,
+  },
 ];
 
 module.exports = routes;

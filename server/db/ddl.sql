@@ -14,3 +14,9 @@ CREATE TABLE `user`
     `isDelete`   tinyint(4)   NOT NULL DEFAULT '0' COMMENT '是否删除',
     PRIMARY KEY (`id`)
 ) ENGINE = InnoDB COMMENT ='用户';
+
+CREATE TABLE `user_space_data` (
+    `userId` bigint(20) PRIMARY KEY,
+    `space` JSON,
+    FOREIGN KEY (`userId`) REFERENCES user(`id`)
+);

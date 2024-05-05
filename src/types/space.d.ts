@@ -1,3 +1,8 @@
+export interface SpaceStateType {
+  space: SpaceType;
+  currentDir: string;
+}
+
 /**
  * 空间类型（扁平）
  */

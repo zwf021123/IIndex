@@ -35,6 +35,10 @@ myAxios.interceptors.response.use(
   },
   function (error) {
     console.log(error);
+    message.error({
+      content: () => error.response.data.message,
+    });
+    // if(error.response.status === 401){
     // message.error("error");
     // 对响应错误做点什么
     return Promise.reject(error);

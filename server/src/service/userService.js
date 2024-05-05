@@ -1,12 +1,13 @@
 const MyError = require("../exception");
 const { Op } = require("sequelize");
 
+const { INIT_SPACE } = require("../constant/space");
 const {
   NO_AUTH_ERROR_CODE,
   REQUEST_PARAMS_ERROR_CODE,
   NOT_FOUND_ERROR_CODE,
 } = require("../exception/errorCode");
-const UserModel = require("../model/user");
+const { UserModel, SpaceModel } = require("../model");
 const md5 = require("md5");
 
 // 密码加盐
@@ -21,7 +22,7 @@ async function getLoginUser(req) {
   // 获取当前登录用户
   const { userInfo } = req.session;
   if (!userInfo?.id) {
-    throw new MyError(NO_AUTH_ERROR_CODE, "未登录");
+    throw new MyError(NO_AUTH_ERROR_CODE, "未登录或登录已过期");
   }
   const currentUser = await UserModel.findByPk(userInfo.id);
   // 检查用户是否合法
@@ -40,7 +41,7 @@ async function getLoginUser(req) {
  */
 async function userRegister(username, password, email) {
   // 校验
-  if (username > 32) {
+  if (username.length > 32) {
     throw new MyError(REQUEST_PARAMS_ERROR_CODE, "用户名过长");
   }
   const regEmail =
@@ -64,6 +65,11 @@ async function userRegister(username, password, email) {
     username,
     password: cryptoPassword,
     email,
+  });
+  // 直接插入该用户的默认空间json数据
+  await SpaceModel.create({
+    userId: user.id,
+    bindingSpace: JSON.stringify(INIT_SPACE),
   });
   return user.id;
 }
