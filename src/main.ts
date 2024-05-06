@@ -11,6 +11,4 @@ const app = createApp(App);
 app.use(router);
 
 // 状态管理
-app.use(pinia);
-
-app.mount("#app");
+app.use(pinia).mount("#app");

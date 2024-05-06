@@ -46,7 +46,11 @@ const loginCommand: CommandType = {
       const spaceRes: any = await getCurrentSpace();
       if (loginRes?.code === 0 && spaceRes?.code === 0) {
         setLoginUser(loginRes.data);
-        setSpace(spaceRes.data);
+        console.log(JSON.parse(spaceRes.data.bindingSpace));
+
+        setSpace(JSON.parse(spaceRes.data.bindingSpace));
+        console.log("赋值后", useSpaceStore().$state);
+
         terminal.writeTextSuccessResult("登录成功");
       } else {
         // terminal.writeTextErrorResult(res?.message ?? "登录失败");

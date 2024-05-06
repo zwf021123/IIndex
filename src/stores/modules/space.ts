@@ -31,6 +31,8 @@ export const useSpaceStore = defineStore("space", {
      * 设置空间
      */
     setSpace(space: SpaceStateType) {
+      console.log("setSpace", space);
+
       this.$patch(space);
     },
     /**
@@ -421,15 +423,15 @@ export const useSpaceStore = defineStore("space", {
     },
   },
   // 持久化(默认是存储到loacalStorage)
-  persist: {
-    key: "space-store",
-    beforeRestore: (context) => {
-      console.log("load spaceStore data start");
-    },
-    afterRestore: (context) => {
-      console.log("load spaceStore data end");
-    },
-  },
+  // persist: {
+  //   key: "space-store",
+  //   beforeRestore: (context) => {
+  //     console.log("load spaceStore data start");
+  //   },
+  //   afterRestore: (context) => {
+  //     console.log("load spaceStore data end");
+  //   },
+  // },
 });
 
 /**

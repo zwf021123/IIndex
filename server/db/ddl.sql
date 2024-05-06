@@ -17,6 +17,6 @@ CREATE TABLE `user`
 
 CREATE TABLE `user_space_data` (
     `userId` bigint(20) PRIMARY KEY,
-    `space` JSON,
+    `bindingSpace` JSON,
     FOREIGN KEY (`userId`) REFERENCES user(`id`)
 );

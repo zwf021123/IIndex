@@ -30,6 +30,7 @@ async function getSpace(req) {
   // 使用currentUser获取space数据
   return await SpaceModel.findOne({
     where: { userId: currentUser.id },
+    attributes: ["bindingSpace"],
   });
 }
 
