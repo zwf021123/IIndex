@@ -1,24 +1,31 @@
 import { CommandType } from "@/types/command";
 import { userLogin, userLogout, userRegister } from "@/api/user";
-import { useUserStore } from "@/stores";
+import { useUserStore, useSpaceStore } from "@/stores";
 import { LOCAL_USER } from "@/constants/user";
-
+import { troggerExecuteUpdate } from "@/stores/modules/space";
 /**
  * 用户注销命令
  * @author zwf021123
  */
 const logoutCommand: CommandType = {
   func: "logout",
-  name: "用户注销",
+  name: "退出登录",
   options: [],
   async action(options, terminal) {
+    const { setLoginUser, isLogin } = useUserStore();
+    const { resetSpace } = useSpaceStore();
+    if (!isLogin) {
+      terminal.writeTextErrorResult("您还未登录");
+      return;
+    }
     const res: any = await userLogout();
-    const { setLoginUser } = useUserStore();
     if (res?.code === 0) {
+      troggerExecuteUpdate();
       setLoginUser(LOCAL_USER);
-      terminal.writeTextSuccessResult("已退出登录");
+      resetSpace();
+      terminal.writeTextSuccessResult("已退出登录,bye~");
     } else {
-      terminal.writeTextErrorResult(res?.message ?? "注销失败");
+      terminal.writeTextErrorResult(res?.message ?? "退出登录失败");
     }
   },
 };

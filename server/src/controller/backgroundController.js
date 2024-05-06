@@ -11,7 +11,7 @@ const { THIRD_PART_SERVICE_ERROR_CODE } = require("../exception/errorCode");
 async function getRandomBackgroundApi(event, req, res) {
   const result = await getRandomBackground(event);
   if (!result) {
-    throw new MyError(THIRD_PART_SERVICE_ERROR_CODE);
+    throw new MyError(THIRD_PART_SERVICE_ERROR_CODE, "第三方服务错误");
   }
   return result;
 }

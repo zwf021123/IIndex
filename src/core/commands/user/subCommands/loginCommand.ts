@@ -1,8 +1,7 @@
 import { CommandType } from "@/types/command";
 import { userLogin } from "@/api/user";
-import { getCurrentSpace } from "@/api/space";
 import { useUserStore, useSpaceStore } from "@/stores";
-import { set } from "lodash";
+import { troggerExecuteUpdate } from "@/stores/modules/space";
 
 /**
  * 用户登录命令
@@ -25,9 +24,16 @@ const loginCommand: CommandType = {
       alias: ["p"],
       type: "string",
       required: true,
+      needHidden: true,
     },
   ],
   async action(options, terminal) {
+    const { setLoginUser, isLogin } = useUserStore();
+    const { requestSpace } = useSpaceStore();
+    if (isLogin) {
+      terminal.writeTextErrorResult("请先退出登录");
+      return;
+    }
     const { username, password } = options;
     if (!username) {
       terminal.writeTextErrorResult("请输入用户名");
@@ -37,20 +43,14 @@ const loginCommand: CommandType = {
       terminal.writeTextErrorResult("请输入密码");
       return;
     }
-    const { setLoginUser } = useUserStore();
-    const { setSpace } = useSpaceStore();
     // const res: any = await userLogin(username, password);
     // console.log(await getCurrentSpace());
     try {
       const loginRes: any = await userLogin(username, password);
-      const spaceRes: any = await getCurrentSpace();
-      if (loginRes?.code === 0 && spaceRes?.code === 0) {
+      if (loginRes?.code === 0) {
+        troggerExecuteUpdate();
         setLoginUser(loginRes.data);
-        console.log(JSON.parse(spaceRes.data.bindingSpace));
-
-        setSpace(JSON.parse(spaceRes.data.bindingSpace));
-        console.log("赋值后", useSpaceStore().$state);
-
+        requestSpace();
         terminal.writeTextSuccessResult("登录成功");
       } else {
         // terminal.writeTextErrorResult(res?.message ?? "登录失败");

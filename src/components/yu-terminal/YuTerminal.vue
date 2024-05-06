@@ -115,9 +115,11 @@ import CommandInputType = YuTerminal.CommandInputType;
 import TerminalType = YuTerminal.TerminalType;
 import TextOutputType = YuTerminal.TextOutputType;
 import OutputStatusType = YuTerminal.OutputStatusType;
-import { CommandOptionType } from "@/types/command";
+import { CommandOptionType, CommandType } from "@/types/command";
 import { UserType } from "@/types/user";
 import { first, second } from "@/constants/terminal";
+import { updateSpace } from "@/api/space";
+import { executeUpdate, troggerExecuteUpdate } from "@/stores/modules/space";
 
 interface YuTerminalProps {
   height?: string | number;
@@ -184,7 +186,16 @@ const isRunning = ref(false);
 // 引入终端配置状态
 const configStore = useTerminalConfigStore();
 
+// 使用空间状态
 const spaceStore = useSpaceStore();
+// 监听空间状态改变并 发请求保存用户空间数据
+spaceStore.$subscribe(async (mutation: any, state) => {
+  // console.log("mutation", mutation);
+  // 判断是否是刷新导致的state改变+是否是logout导致的state改变，则不发送请求update数据
+  console.log("****监听state****", state, mutation, executeUpdate);
+  executeUpdate && (await updateSpace(state));
+  troggerExecuteUpdate();
+});
 
 /**
  * 初始命令
@@ -278,9 +289,56 @@ const doSubmitCommand = async () => {
   isRunning.value = false;
 };
 
+const hiddenValue = ref([]);
+let tempStr = "";
+const hideInput = () => {
+  if (!command.value) {
+    return;
+  }
+  // 没有需要隐藏的内容(包括子命令)（新建一个函数递归判断）
+  if (
+    !Object.keys(command.value).some((key) => key === "needHidden") ||
+    (command.value.subCommands &&
+      !command.value.subCommands.some(
+        (subCommand: CommandType) =>
+          !subCommand.options.some(
+            (option: CommandOptionType) => option.needHidden
+          )
+      ))
+  ) {
+    console.log(1);
+
+    return;
+  }
+
+  let flag = false;
+  tempStr = "";
+  // 得到所有需要隐藏的选项（新建一个函数递归获取
+  const needHiddenOptions = command.value.options.filter(
+    (option: CommandOptionType) => option.needHidden
+  );
+  console.log("需要隐藏的:", needHiddenOptions);
+  // 用户输入的最后一个单词
+  const lastWord = inputCommand.value.text.split(/\s+/).pop() || "";
+  // 如果用户输入的最后一个单词在需要隐藏的选项中，则开始隐藏
+  needHiddenOptions.some((option: CommandOptionType) => {
+    if (option.alias?.includes(lastWord[1])) {
+      // 开始隐藏
+      flag = true;
+    }
+  });
+  if (flag) {
+    const lastChar = inputCommand.value.text.slice(-1);
+    if (lastChar === " ") flag = false;
+    tempStr += lastChar;
+    inputCommand.value.text = inputCommand.value.text.slice(0, -1) + "*";
+  }
+};
+
 // 输入框内容改变时，触发输入提示
 watchEffect(() => {
   debounceSetHint(inputCommand.value.text);
+  hideInput();
 });
 
 /**

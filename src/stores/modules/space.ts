@@ -6,7 +6,13 @@ import {
   SpaceStateType,
 } from "@/types/space";
 import { pathReg } from "@/constants/regExp";
+import { getCurrentSpace } from "@/api/space";
 
+// 用于在监听state变化时，筛选某些不需要的行为
+export let executeUpdate = true;
+export const troggerExecuteUpdate = () => {
+  executeUpdate = !executeUpdate;
+};
 /**
  * 空间状态（类似文件系统实现）
  */
@@ -27,6 +33,21 @@ export const useSpaceStore = defineStore("space", {
   }),
   getters: {},
   actions: {
+    /**
+     * 重置state
+     */
+    resetSpace() {
+      this.$reset();
+    },
+    /**
+     * 获取当前用户空间
+     */
+    async requestSpace() {
+      const spaceRes: any = await getCurrentSpace();
+      if (spaceRes?.code === 0) {
+        this.setSpace(JSON.parse(spaceRes.data.bindingSpace));
+      }
+    },
     /**
      * 设置空间
      */
@@ -150,32 +171,41 @@ export const useSpaceStore = defineStore("space", {
     /**
      * 递归复制目录 copy ./newtest /xxx -r
      */
-    copyDirectory(sourcePath: string, targetPath: string): Promise<void> {
+    copyDirectory(
+      sourcePath: string,
+      targetPath: string,
+      completely: boolean
+    ): Promise<void> {
       return new Promise((resolve, reject) => {
         const items = this.listItems(sourcePath, true);
         // console.log("items", items);
-        // const itemName = getItemName(sourcePath);
-        // const newDirPath = targetPath + itemName;
-        // if (!this.space[newDirPath]) {
-        //   try {
-        //     this.addItem({
-        //       dir: targetPath,
-        //       name: itemName,
-        //       type: "dir",
-        //     });
-        //   } catch (err) {
-        //     reject(err);
-        //   }
-        // }
+        const itemName = getItemName(sourcePath);
+        if (completely) {
+          // 如果是完全复制，则需要先创建目标目录
+          const newDirPath = targetPath + itemName;
+          if (!this.space[newDirPath]) {
+            try {
+              this.addItem({
+                dir: targetPath,
+                name: itemName,
+                type: "dir",
+              });
+            } catch (err) {
+              reject(err);
+            }
+          }
+        }
         for (const item of items) {
           // 计算在目标目录中的路径
-          const targetItemPath = targetPath + "/" + item.name;
+          const targetItemPath = completely
+            ? targetPath + "/" + itemName + "/" + item.name
+            : targetPath + "/" + item.name;
           // const targetItemPath = targetPath + itemName + "/" + item.name;
           // console.log("targetItemPath", targetItemPath);
 
           // 如果这一项是一个目录，则递归调用 copyDirectory
           if (item.type === "dir") {
-            this.copyDirectory(item.dir, targetItemPath);
+            this.copyDirectory(item.dir, targetItemPath, completely);
           } else {
             // 否则，直接复制这一项
             this.space[targetItemPath] = {
@@ -269,7 +299,8 @@ export const useSpaceStore = defineStore("space", {
     copyItem(
       source: string,
       target: string,
-      recursive = false
+      recursive = false,
+      completely = false
     ): Promise<string> {
       return new Promise((resolve, reject) => {
         // e.g. /a/b => /a/c
@@ -298,7 +329,8 @@ export const useSpaceStore = defineStore("space", {
 
         // 目标条目已存在
         const tempPath = targetFullPath + "/" + getItemName(sourceFullPath);
-        if (this.space[tempPath]) {
+        // 如果是复制目录，允许只复制目录下的内容
+        if (sourceItem.type === "link" && this.space[tempPath]) {
           reject("目标条目已存在");
           return;
         }
@@ -308,7 +340,7 @@ export const useSpaceStore = defineStore("space", {
           return;
         }
         if (sourceItem.type === "dir" && recursive) {
-          this.copyDirectory(sourceFullPath, targetFullPath)
+          this.copyDirectory(sourceFullPath, targetFullPath, completely)
             .then(() => {
               resolve(targetFullPath);
             })
@@ -339,10 +371,11 @@ export const useSpaceStore = defineStore("space", {
     moveItem(
       source: string,
       target: string,
-      recursive = false
+      recursive = false,
+      completely = false
     ): Promise<string> {
       return new Promise((resolve, reject) => {
-        const p1 = this.copyItem(source, target, recursive);
+        const p1 = this.copyItem(source, target, recursive, completely);
         const p2 = this.deleteItem(source, recursive);
         Promise.all([p1, p2])
           .then(() => {

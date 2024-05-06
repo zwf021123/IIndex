@@ -22,6 +22,7 @@ const registerCommand: CommandType = {
       alias: ["p"],
       type: "string",
       required: true,
+      needHidden: true,
     },
     {
       key: "email",

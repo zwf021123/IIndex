@@ -28,9 +28,16 @@ const copyCommand: CommandType = {
       type: "boolean",
       defaultValue: false,
     },
+    {
+      key: "completely",
+      desc: "是否完全复制",
+      alias: ["c"],
+      type: "boolean",
+      defaultValue: false,
+    },
   ],
   async action(options, terminal): Promise<void> {
-    const { _, recursive = false } = options;
+    const { _, recursive = false, completely = false } = options;
     if (_.length < 2) {
       terminal.writeTextErrorResult("参数不足");
       return;
@@ -39,7 +46,7 @@ const copyCommand: CommandType = {
     const [source, target] = _;
 
     try {
-      await spaceStore.copyItem(source, target, recursive);
+      await spaceStore.copyItem(source, target, recursive, completely);
       terminal.writeTextSuccessResult("复制成功");
     } catch (errMsg: any) {
       terminal.writeTextErrorResult(errMsg);

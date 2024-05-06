@@ -10,12 +10,11 @@ const { updateSpace, getSpace } = require("../service/spaceService");
  * @param {string} userId 用户id
  * @param {json} spaceData 用户space数据
  */
-async function updateSpaceApi(event, req, res) {
-  const { userId, spaceData } = event;
-  if (!userId || !spaceData) {
+async function updateSpaceApi(spaceData, req, res) {
+  if (!spaceData) {
     throw new MyError(REQUEST_PARAMS_ERROR_CODE, "参数错误");
   }
-  return await updateSpace(userId, spaceData);
+  return await updateSpace(spaceData, req);
 }
 
 /**

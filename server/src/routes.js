@@ -40,6 +40,10 @@ const routes = [
     path: "/space/current",
     handler: require("./controller/spaceController").getSpaceApi,
   },
+  {
+    path: "/space/update",
+    handler: require("./controller/spaceController").updateSpaceApi,
+  },
 ];
 
 module.exports = routes;

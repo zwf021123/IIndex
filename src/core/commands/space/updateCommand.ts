@@ -39,6 +39,11 @@ const addCommand: CommandType = {
       terminal.writeTextErrorResult("请至少输入名称或链接");
       return;
     }
+    const isDir = spaceStore.getItem(dir)?.type === "dir";
+    if (isDir) {
+      terminal.writeTextErrorResult("不能更新目录的link字段");
+      return;
+    }
     // 获取原有的name和link，避免只更新一个字段时，另一个字段被清空
     if (!name) {
       name = spaceStore.getItem(dir)?.name;

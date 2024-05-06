@@ -18,7 +18,7 @@ async function translateApi(event, req, res) {
   }
   const result = await translate(keywords, config);
   if (!result) {
-    throw new MyError(THIRD_PART_SERVICE_ERROR_CODE);
+    throw new MyError(THIRD_PART_SERVICE_ERROR_CODE, "第三方服务错误");
   }
   return result;
 }

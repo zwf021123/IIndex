@@ -12,6 +12,7 @@ import { doCommandExecute } from "../core/commandExecutor";
 import { onMounted, ref } from "vue";
 import { useUserStore } from "@/stores";
 import { storeToRefs } from "pinia";
+import { troggerExecuteUpdate } from "@/stores/modules/space";
 
 const terminalRef = ref();
 
@@ -32,6 +33,7 @@ const userStore = useUserStore();
 const { loginUser } = storeToRefs(userStore);
 
 onMounted(() => {
+  troggerExecuteUpdate();
   userStore.getAndSetLoginUser();
 });
 </script>

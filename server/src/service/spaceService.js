@@ -11,7 +11,24 @@ const { UserModel, SpaceModel } = require("../model");
  * @param {string} userId 用户id
  * @param {json} spaceData 用户space数据
  */
-async function updateSpace(userId, spaceData) { }
+async function updateSpace(spaceData, req) {
+  const { userInfo } = req.session;
+  if (!userInfo?.id) {
+    throw new MyError(NO_AUTH_ERROR_CODE, "未登录");
+  }
+  const currentUser = await UserModel.findByPk(userInfo.id);
+  // 检查用户是否合法
+  if (!currentUser) {
+    throw new MyError(NOT_FOUND_ERROR_CODE, "找不到该用户");
+  }
+  // 使用currentUser更新space数据
+  return await SpaceModel.update(
+    { bindingSpace: JSON.stringify(spaceData) },
+    {
+      where: { userId: currentUser.id },
+    }
+  );
+}
 
 /**
  * 获取用户space数据

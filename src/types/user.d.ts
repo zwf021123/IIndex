@@ -4,6 +4,7 @@
  */
 export interface UserType {
   username: string;
+  id?: number;
   email?: string;
   createTime?: date;
   updateTime?: date;

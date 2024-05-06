@@ -29,14 +29,14 @@ myAxios.interceptors.request.use(
 // 添加响应拦截器
 myAxios.interceptors.response.use(
   function (response) {
-    console.log(response);
+    console.log("请求响应：", response);
     // 对响应数据做点什么
     return response.data;
   },
   function (error) {
-    console.log(error);
+    console.log("响应错误", error);
     message.error({
-      content: () => error.response.data.message,
+      content: () => `${error.response.status}: ${error.response.data.message}`,
     });
     // if(error.response.status === 401){
     // message.error("error");
