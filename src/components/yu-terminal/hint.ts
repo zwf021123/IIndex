@@ -43,8 +43,9 @@ const useHint = () => {
         command.value.subCommands[likeKey],
         command.value
       );
+
       // 获取提示后再更新command
-      command.value = commandMap[likeKey];
+      command.value = command.value.subCommands[likeKey];
     } else {
       hint.value = getUsageStr(command.value);
     }

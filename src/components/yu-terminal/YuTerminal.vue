@@ -76,6 +76,7 @@
           :bordered="false"
           autofocus
           @press-enter="doSubmitCommand"
+          @change="hideInput"
         >
           <template #addonBefore>
             <span class="command-input-prompt">{{ prompt }}</span>
@@ -100,6 +101,7 @@ import {
   StyleValue,
   toRefs,
   watchEffect,
+  watch,
 } from "vue";
 import { useSpaceStore } from "@/stores";
 import { registerShortcuts } from "./shortcuts";
@@ -159,7 +161,6 @@ const mainStyle = computed(() => {
 const wrapperStyle = computed(() => {
   // 从配置中获取背景
   const { background } = configStore;
-  console.log("background", background);
   const style = {
     ...mainStyle.value,
   };
@@ -290,46 +291,69 @@ const doSubmitCommand = async () => {
 };
 
 const hiddenValue = ref([]);
+
 let tempStr = "";
+
+const needHidden = (command: CommandType): boolean => {
+  if (!command.options) return false;
+  if (command.subCommands) {
+    // 递归子命令
+    return Object.values(command.subCommands).some((sub) => needHidden(sub));
+  } else {
+    return command.options.some((option) => option.needHidden);
+  }
+};
+
+const getNeedHiddenOptions = (command: CommandType): CommandOptionType[] => {
+  if (!command.options) return [];
+  if (command.subCommands) {
+    // 递归子命令
+    return Object.values(command.subCommands).reduce(
+      (prev: CommandOptionType[], sub) => [
+        ...prev,
+        ...getNeedHiddenOptions(sub),
+      ],
+      []
+    );
+  } else {
+    return command.options.filter((option) => option.needHidden);
+  }
+};
+
 const hideInput = () => {
   if (!command.value) {
     return;
   }
   // 没有需要隐藏的内容(包括子命令)（新建一个函数递归判断）
-  if (
-    !Object.keys(command.value).some((key) => key === "needHidden") ||
-    (command.value.subCommands &&
-      !command.value.subCommands.some(
-        (subCommand: CommandType) =>
-          !subCommand.options.some(
-            (option: CommandOptionType) => option.needHidden
-          )
-      ))
-  ) {
+  if (!needHidden(command.value)) {
     console.log(1);
-
     return;
   }
 
   let flag = false;
   tempStr = "";
   // 得到所有需要隐藏的选项（新建一个函数递归获取
-  const needHiddenOptions = command.value.options.filter(
-    (option: CommandOptionType) => option.needHidden
-  );
+  const needHiddenOptions = getNeedHiddenOptions(command.value);
   console.log("需要隐藏的:", needHiddenOptions);
   // 用户输入的最后一个单词
-  const lastWord = inputCommand.value.text.split(/\s+/).pop() || "";
+  const lastWord =
+    inputCommand.value.text.split(/\s+/).slice(-1).join("") || "";
   // 如果用户输入的最后一个单词在需要隐藏的选项中，则开始隐藏
+  console.log("最后一个单词:", lastWord, lastWord.substring(1));
+
   needHiddenOptions.some((option: CommandOptionType) => {
-    if (option.alias?.includes(lastWord[1])) {
+    if (
+      option.alias?.includes(lastWord.substring(1)) ||
+      option.key === lastWord.substring(1)
+    ) {
       // 开始隐藏
+      console.log("开始隐藏");
       flag = true;
     }
   });
   if (flag) {
     const lastChar = inputCommand.value.text.slice(-1);
-    if (lastChar === " ") flag = false;
+    // if (lastChar === " ") flag = false;
     tempStr += lastChar;
     inputCommand.value.text = inputCommand.value.text.slice(0, -1) + "*";
   }
@@ -338,7 +362,6 @@ const hideInput = () => {
 // 输入框内容改变时，触发输入提示
 watchEffect(() => {
   debounceSetHint(inputCommand.value.text);
-  hideInput();
 });
 
 /**
