@@ -76,8 +76,8 @@
           :bordered="false"
           autofocus
           @press-enter="doSubmitCommand"
-          @change="hideInput"
         >
+          <!-- @change="hideInput" -->
           <template #addonBefore>
             <span class="command-input-prompt">{{ prompt }}</span>
           </template>
