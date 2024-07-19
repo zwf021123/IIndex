@@ -288,8 +288,8 @@ const doSubmitCommand = async () => {
   try {
     await props.onSubmitCommand?.(inputText);
   } catch (e) {
-    message.error("命令执行异常");
     console.log("命令执行异常", e);
+    message.error("命令执行异常");
   } finally {
     // 添加输出（为空也要输出换行）
     outputList.value.push(newCommand);
