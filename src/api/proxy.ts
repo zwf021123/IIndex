@@ -1,4 +1,4 @@
-// 该服务为 vercel serve跨域处理
+// 该服务为 vercel serve跨域处理（弃用
 const { createProxyMiddleware } = require("http-proxy-middleware");
 module.exports = (req: any, res: any) => {
   let target = "";

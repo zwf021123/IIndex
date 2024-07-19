@@ -7,7 +7,7 @@ const myAxios = axios.create({
     // @ts-ignore
     // ? "/api"
     process.env.NODE_ENV === "production"
-      ? "http://106.53.22.27/api"
+      ? "http://139.159.205.170/api"
       : "http://localhost:5000/api",
 });
 
@@ -36,7 +36,8 @@ myAxios.interceptors.response.use(
   function (error) {
     console.log("响应错误", error);
     message.error({
-      content: () => `${error.response.status}: ${error.response.data.message}`,
+      content: () =>
+        `获取数据失败，Request failed with status code ${error.response?.status}`,
     });
     // if(error.response.status === 401){
     // message.error("error");

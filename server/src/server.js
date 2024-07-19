@@ -113,6 +113,11 @@ class ExpressServer {
           }`
         );
       } catch (e) {
+        console.error(
+          `req error path = ${req.path
+          }, clientIp = ${requestClientIp}, params = ${JSON.stringify(event)}`,
+          e
+        );
         // 全局异常处理
         if (e instanceof MyError) {
           result = {
@@ -129,11 +134,6 @@ class ExpressServer {
           };
           res.status("500");
         }
-        console.error(
-          `req error path = ${req.path
-          }, clientIp = ${requestClientIp}, params = ${JSON.stringify(event)}`,
-          e
-        );
       }
       res.send(result);
     };

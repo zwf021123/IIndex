@@ -103,7 +103,7 @@ import {
   watchEffect,
   watch,
 } from "vue";
-import { useSpaceStore } from "@/stores";
+import { useSpaceStore, useUserStore } from "@/stores";
 import { registerShortcuts } from "./shortcuts";
 import { useTerminalConfigStore } from "@/stores";
 import { likeSearch } from "@/utils/likeSearch";
@@ -122,6 +122,7 @@ import { UserType } from "@/types/user";
 import { first, second } from "@/constants/terminal";
 import { updateSpace } from "@/api/space";
 import { executeUpdate, troggerExecuteUpdate } from "@/stores/modules/space";
+import { message } from "ant-design-vue";
 
 interface YuTerminalProps {
   height?: string | number;
@@ -187,6 +188,8 @@ const isRunning = ref(false);
 // 引入终端配置状态
 const configStore = useTerminalConfigStore();
 
+const userStore = useUserStore();
+
 // 使用空间状态
 const spaceStore = useSpaceStore();
 // 监听空间状态改变并 发请求保存用户空间数据
@@ -194,8 +197,20 @@ spaceStore.$subscribe(async (mutation: any, state) => {
   // console.log("mutation", mutation);
   // 判断是否是刷新导致的state改变+是否是logout导致的state改变，则不发送请求update数据
   console.log("****监听state****", state, mutation, executeUpdate);
-  executeUpdate && (await updateSpace(state));
-  troggerExecuteUpdate();
+  if (userStore.isLogin) {
+    try {
+      if (!executeUpdate) {
+        // 跳过一次更新
+        troggerExecuteUpdate();
+        return;
+      }
+      await updateSpace(state);
+    } catch (e) {
+      message.error("数据保存失败");
+    }
+  } else {
+    message.warning("请先登录，否则数据无法保存");
+  }
 });
 
 /**
@@ -270,24 +285,30 @@ const doSubmitCommand = async () => {
   // 记录当前命令，便于写入结果
   currentNewCommand = newCommand;
   // 执行命令
-  await props.onSubmitCommand?.(inputText);
-  // 添加输出（为空也要输出换行）
-  outputList.value.push(newCommand);
-  // 不为空字符串才算是有效命令
-  if (inputText) {
-    commandList.value.push(newCommand);
-    // 重置当前要查看的命令位置
-    commandHistoryPos.value = commandList.value.length;
+  try {
+    await props.onSubmitCommand?.(inputText);
+  } catch (e) {
+    message.error("命令执行异常");
+    console.log("命令执行异常", e);
+  } finally {
+    // 添加输出（为空也要输出换行）
+    outputList.value.push(newCommand);
+    // 不为空字符串才算是有效命令
+    if (inputText) {
+      commandList.value.push(newCommand);
+      // 重置当前要查看的命令位置
+      commandHistoryPos.value = commandList.value.length;
+    }
+    // 重置
+    inputCommand.value = { ...initCommand };
+    // 默认展开折叠面板
+    activeKeys.value.push(outputList.value.length - 1);
+    // 自动滚到底部
+    setTimeout(() => {
+      terminalRef.value.scrollTop = terminalRef.value.scrollHeight;
+    }, 50);
+    isRunning.value = false;
   }
-  // 重置
-  inputCommand.value = { ...initCommand };
-  // 默认展开折叠面板
-  activeKeys.value.push(outputList.value.length - 1);
-  // 自动滚到底部
-  setTimeout(() => {
-    terminalRef.value.scrollTop = terminalRef.value.scrollHeight;
-  }, 50);
-  isRunning.value = false;
 };
 
 const hiddenValue = ref([]);
