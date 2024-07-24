@@ -3,6 +3,12 @@
     class="yu-terminal-wrapper"
     :style="wrapperStyle"
     @click="handleClickWrapper"
+    @dblclick="
+      () => {
+        focusInput();
+        setTabCompletion();
+      }
+    "
     @touchstart="handleTouchStart"
     @touchend="handleTouchEnd"
   >
@@ -125,6 +131,7 @@ import { first, second } from "@/constants/terminal";
 import { updateSpace } from "@/api/space";
 import { executeUpdate, troggerExecuteUpdate } from "@/stores/modules/space";
 import { message } from "ant-design-vue";
+import _ from "lodash";
 
 interface YuTerminalProps {
   height?: string | number;
@@ -635,15 +642,20 @@ const terminal: TerminalType = {
 function handleClickWrapper(event: MouseEvent): void {
   //@ts-ignore
   if (event.target.className === "yu-terminal") {
-    if (event.detail === 1) {
-      focusInput();
-    } else if (event.detail === 2) {
-      setTabCompletion();
-    } else if (event.detail === 3) {
-      toggleAllCollapse();
-    }
+    focusInput();
+    // if (event.detail === 1) {
+    //   focusInput();
+    // } else if (event.detail === 2) {
+    //   focusInput();
+    //   setTabCompletion();
+    // } else if (event.detail === 3) {
+    //   focusInput();
+    //   toggleAllCollapse();
+    // }
   }
 }
+
+// const debounceClickWrapper = _.debounce(handleClickWrapper, 200);
 
 defineExpose({
   terminal,
