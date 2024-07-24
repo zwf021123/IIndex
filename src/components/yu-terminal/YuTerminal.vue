@@ -3,6 +3,8 @@
     class="yu-terminal-wrapper"
     :style="wrapperStyle"
     @click="handleClickWrapper"
+    @touchstart="handleTouchStart"
+    @touchend="handleTouchEnd"
   >
     <a-spin
       class="loading"
@@ -172,6 +174,36 @@ const wrapperStyle = computed(() => {
 
 // 避免解构丢失响应性
 const { user } = toRefs(props);
+
+// 记录触摸开始与结束坐标
+let touchStartX = 0;
+let touchEndX = 0;
+
+/**
+ * 触摸开始
+ * @param event
+ */
+const handleTouchStart = (event: TouchEvent) => {
+  touchStartX = event.touches[0].clientX;
+  console.log("touchStartX", touchStartX);
+};
+
+/**
+ * 触摸结束
+ * @param event
+ */
+const handleTouchEnd = (event: TouchEvent) => {
+  touchEndX = event.changedTouches[0].clientX;
+  console.log("touchEndX", touchEndX);
+  const deltaX = touchEndX - touchStartX;
+  if (deltaX > 50) {
+    // 右扫
+    showPrevCommand();
+  } else if (deltaX < -50) {
+    // 左扫
+    showNextCommand();
+  }
+};
 
 const terminalRef = ref();
 const activeKeys = ref<number[]>([]);
@@ -600,10 +632,16 @@ const terminal: TerminalType = {
 /**
  * 当点击空白聚焦输入框
  */
-function handleClickWrapper(event: Event): void {
+function handleClickWrapper(event: MouseEvent): void {
   //@ts-ignore
   if (event.target.className === "yu-terminal") {
-    focusInput();
+    if (event.detail === 1) {
+      focusInput();
+    } else if (event.detail === 2) {
+      setTabCompletion();
+    } else if (event.detail === 3) {
+      toggleAllCollapse();
+    }
   }
 }
 

@@ -37,10 +37,10 @@ myAxios.interceptors.response.use(
     console.log("响应错误", error);
     message.error({
       content: () =>
-        `获取数据失败，Request failed with status code ${error.response?.status}`,
+        `${error.response.data?.code || error.response.status || error.code}：${
+          error.response.data?.message || "服务异常"
+        }`,
     });
-    // if(error.response.status === 401){
-    // message.error("error");
     // 对响应错误做点什么
     return Promise.reject(error);
   }

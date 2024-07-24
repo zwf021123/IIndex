@@ -10,7 +10,7 @@ const baseUrl = "https://www.baidu.com/s";
  */
 const bilibiliCommand: CommandType = {
   func: "bilibili",
-  name: "bilibili 搜索",
+  name: "bilibili搜索",
   alias: ["bzhan", "bili"],
   params: [
     {

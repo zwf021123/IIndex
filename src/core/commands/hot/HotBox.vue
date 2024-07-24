@@ -3,14 +3,9 @@
     <div v-for="(song, index) in songList" :key="index">
       <a-popover placement="right">
         <template #content>
-          <img :src="song?.al?.picUrl" width="260" :alt="song?.al?.name" />
+          <img :src="song?.al?.picUrl" width="260" />
         </template>
-        <img
-          :src="song?.al?.picUrl"
-          height="25"
-          :alt="song?.al?.name"
-          class="songCover"
-        />
+        <img :src="song?.al?.picUrl" height="25" class="songCover" />
       </a-popover>
       <a :href="`https://music.163.com/#/song?id=${song?.id}`" target="_blank">
         {{ song?.al?.name }}

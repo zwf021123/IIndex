@@ -4,7 +4,7 @@
   "private": true,
   "version": "0.0.0",
   "scripts": {
-    "dev": "vite",
+    "dev": "vite --host",
     "dev:crx": "cross-env BUILD_CRX=1 vite build --watch",
     "build": "vue-tsc --noEmit && vite build",
     "build:crx": "cross-env BUILD_CRX=1 vite build",
