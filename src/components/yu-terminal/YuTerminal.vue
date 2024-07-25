@@ -3,12 +3,7 @@
     class="yu-terminal-wrapper"
     :style="wrapperStyle"
     @click="handleClickWrapper"
-    @dblclick="
-      () => {
-        focusInput();
-        setTabCompletion();
-      }
-    "
+    @dblclick="handleDlbClickWrapper"
     @touchstart="handleTouchStart"
     @touchend="handleTouchEnd"
   >
@@ -652,6 +647,14 @@ function handleClickWrapper(event: MouseEvent): void {
     //   focusInput();
     //   toggleAllCollapse();
     // }
+  }
+}
+
+function handleDlbClickWrapper(event: MouseEvent) {
+  //@ts-ignore
+  if (event.target.className === "yu-terminal") {
+    focusInput();
+    setTabCompletion();
   }
 }
 
