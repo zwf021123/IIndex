@@ -87,7 +87,6 @@ npm run start
     - config.prod.js 线上配置
   - constant 常量
   - controller 接口层
-  - dao 数据访问层
   - exception 异常处理
   - model 数据模型
   - service 业务逻辑
