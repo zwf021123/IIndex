@@ -6,8 +6,8 @@ const myAxios = axios.create({
   baseURL:
     // @ts-ignore
     // ? "/api"
-    process.env.NODE_ENV === "prod"
-      ? "http://139.9.69.223/api"
+    process.env.NODE_ENV === "production"
+      ? "http://139.9.69.223:5000/api"
       : "http://localhost:5000/api",
 });
 
