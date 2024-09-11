@@ -298,7 +298,7 @@
 
 "denque@^1.5.0":
   "integrity" "sha1-B/Zw4pyaePj67LJWah4sEZKcXL8="
-  "resolved" "https://registry.nlark.com/denque/download/denque-1.5.1.tgz"
+  "resolved" "https://registry.npmmirror.com/denque/download/denque-1.5.1.tgz"
   "version" "1.5.1"
 
 "denque@^2.0.1":
@@ -402,7 +402,7 @@
 
 "express-session@^1.17.2":
   "integrity" "sha1-OXAgN0+b95l/iRuF6jOHZ7MNDv0="
-  "resolved" "https://registry.nlark.com/express-session/download/express-session-1.17.2.tgz"
+  "resolved" "https://registry.npmmirror.com/express-session/download/express-session-1.17.2.tgz"
   "version" "1.17.2"
   dependencies:
     "cookie" "0.4.1"
@@ -506,7 +506,7 @@
 
 "forwarded@0.2.0":
   "integrity" "sha1-ImmTZCiq1MFcfr6XeahL8LKoGBE="
-  "resolved" "https://registry.nlark.com/forwarded/download/forwarded-0.2.0.tgz?cache=0&sync_timestamp=1622503499867&other_urls=https%3A%2F%2Fregistry.nlark.com%2Fforwarded%2Fdownload%2Fforwarded-0.2.0.tgz"
+  "resolved" "https://registry.npmmirror.com/forwarded/download/forwarded-0.2.0.tgz?cache=0&sync_timestamp=1622503499867&other_urls=https%3A%2F%2Fregistry.nlark.com%2Fforwarded%2Fdownload%2Fforwarded-0.2.0.tgz"
   "version" "0.2.0"
 
 "fresh@0.5.2":
@@ -597,7 +597,7 @@
 
 "iconv-lite@0.4.24":
   "integrity" "sha1-ICK0sl+93CHS9SSXSkdKr+czkIs="
-  "resolved" "https://registry.nlark.com/iconv-lite/download/iconv-lite-0.4.24.tgz?cache=0&other_urls=https%3A%2F%2Fregistry.nlark.com%2Ficonv-lite%2Fdownload%2Ficonv-lite-0.4.24.tgz"
+  "resolved" "https://registry.npmmirror.com/iconv-lite/download/iconv-lite-0.4.24.tgz?cache=0&other_urls=https%3A%2F%2Fregistry.nlark.com%2Ficonv-lite%2Fdownload%2Ficonv-lite-0.4.24.tgz"
   "version" "0.4.24"
   dependencies:
     "safer-buffer" ">= 2.1.2 < 3"
@@ -629,7 +629,7 @@
 
 "ipaddr.js@1.9.1":
   "integrity" "sha1-v/OFQ+64mEglB5/zoqjmy9RngbM="
-  "resolved" "https://registry.nlark.com/ipaddr.js/download/ipaddr.js-1.9.1.tgz"
+  "resolved" "https://registry.npmmirror.com/ipaddr.js/download/ipaddr.js-1.9.1.tgz"
   "version" "1.9.1"
 
 "is-buffer@~1.1.6":
@@ -962,7 +962,7 @@
 
 "proxy-addr@~2.0.7":
   "integrity" "sha1-8Z/mnOqzEe65S0LnDowgcPm6ECU="
-  "resolved" "https://registry.nlark.com/proxy-addr/download/proxy-addr-2.0.7.tgz"
+  "resolved" "https://registry.npmmirror.com/proxy-addr/download/proxy-addr-2.0.7.tgz"
   "version" "2.0.7"
   dependencies:
     "forwarded" "0.2.0"
@@ -1046,7 +1046,7 @@
 
 "redis-errors@^1.0.0", "redis-errors@^1.2.0":
   "integrity" "sha1-62LSrbFeTq9GEMBK/hUpOEJQq60="
-  "resolved" "https://registry.nlark.com/redis-errors/download/redis-errors-1.2.0.tgz"
+  "resolved" "https://registry.npmmirror.com/redis-errors/download/redis-errors-1.2.0.tgz"
   "version" "1.2.0"
 
 "redis-parser@^3.0.0":
@@ -1083,7 +1083,7 @@
 
 "safe-buffer@~5.2.0", "safe-buffer@5.2.1":
   "integrity" "sha1-Hq+fqb2x/dTsdfWPnNtOa3gn7sY="
-  "resolved" "https://registry.nlark.com/safe-buffer/download/safe-buffer-5.2.1.tgz"
+  "resolved" "https://registry.npmmirror.com/safe-buffer/download/safe-buffer-5.2.1.tgz"
   "version" "5.2.1"
 
 "safe-buffer@5.1.2":
@@ -1188,7 +1188,7 @@
 
 "shebang-regex@^3.0.0":
   "integrity" "sha1-rhbxZE2HPsrYQ7AwexQzYtTEIXI="
-  "resolved" "https://registry.nlark.com/shebang-regex/download/shebang-regex-3.0.0.tgz?cache=0&sync_timestamp=1628896304371&other_urls=https%3A%2F%2Fregistry.nlark.com%2Fshebang-regex%2Fdownload%2Fshebang-regex-3.0.0.tgz"
+  "resolved" "https://registry.npmmirror.com/shebang-regex/download/shebang-regex-3.0.0.tgz?cache=0&sync_timestamp=1628896304371&other_urls=https%3A%2F%2Fregistry.nlark.com%2Fshebang-regex%2Fdownload%2Fshebang-regex-3.0.0.tgz"
   "version" "3.0.0"
 
 "smart-buffer@^4.2.0":
@@ -1319,7 +1319,7 @@
 
 "uid-safe@~2.1.5":
   "integrity" "sha1-Kz1cckDo/C5Y+Komnl7knAhXvTo="
-  "resolved" "https://registry.nlark.com/uid-safe/download/uid-safe-2.1.5.tgz"
+  "resolved" "https://registry.npmmirror.com/uid-safe/download/uid-safe-2.1.5.tgz"
   "version" "2.1.5"
   dependencies:
     "random-bytes" "~1.0.0"
